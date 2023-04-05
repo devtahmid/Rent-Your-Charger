@@ -9,7 +9,7 @@ class Users
         $this->_name = $dbRow['name'];
         $this->_email = $dbRow['email'];
         $this->_password = $dbRow['password'];
-        $this->_isOwner = $dbRow['isowner'];
+        $this->_isOwner = $dbRow['isOwner'];
         $this->_ownerAddressFK = $dbRow['ownerAddressFK'];
     }
 

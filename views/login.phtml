@@ -59,18 +59,36 @@
 							<input type="password" name='password' placeholder="Password" required>
 						</div>
 						<div class="field">
-							<input type="password" name='password' placeholder="Password" required>
+							<input type="password" name='confirm_password' placeholder="Confirm password" required>
 						</div>
 						<div class="field">
-							selection input <br>
-							if true, required street address, latitude, longtitude, price per KWh
-							<br><br><br><br>
-							dsd
+
+							<input type="checkbox" class="field height-width-0" name="isOwner" value="I am a charger owner">
+							<label> Selected </label>
+
 						</div>
-						<!-- <div class="field">
-						<input type="password" placeholder="Confirm password" required>
-					</div> -->
+						<div class="field">
+							<input type="text" name='street_address' placeholder="Street Address">
+							<!-- method1->script below method2-> make it required and class hidden for javascript -->
+						</div>
+						<div class="field">
+							<input type="text" name='longitude' placeholder="Longitude">
+							<!-- method1->script below method2-> make it required and class hidden for javascript -->
+						</div>
+						<div class="field">
+							<input type="text" name='Latitude' placeholder="Latitude">
+							<!-- method1->script below method2-> make it required and class hidden for javascript -->
+						</div>
+						<div class="field">
+							<input type="number" min='0.1' name='rate' placeholder="Rate">
+							<!-- method1->script below method2-> make it required and class hidden for javascript -->
+						</div>
 					</div>
+					<?php
+					if (isset($error2)) {
+						echo "<script>alert('" . $error2 . "');</script>";
+					}
+					?>
 					<div class="field btn">
 						<div class="btn-layer"></div>
 						<input type="submit" name='submit' value="Signup">
@@ -98,6 +116,17 @@
 			signupBtn.click();
 			return false;
 		});
+
+		//checkbox toggle
+		function toggleAdditionalDetails() {
+			var checkBox = document.getElementsByName("selected")[0];
+			var additionalDetails = document.getElementById("additionalDetails");
+			if (checkBox.checked == true) {
+				additionalDetails.style.display = "block";
+			} else {
+				additionalDetails.style.display = "none";
+			}
+		}
 	</script>
 </body>
 
