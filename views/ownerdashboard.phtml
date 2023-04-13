@@ -130,14 +130,16 @@
             foreach ($subscriptions as $subscription) {
 
               echo "<tr>";
-              echo "<th scope='row'>" . $allRenterNames[$renterNameIndex]['name'] . "</th>";
+              echo "<th scope='row'>" . htmlspecialchars($allRenterNames[$renterNameIndex]['name']) . "</th>";
               echo "<td>" . $subscription['startDate'] . "</td>";
               echo "<td>" . $subscription['startTime']  . "</td>";
               echo "<td>" . $subscription['endTime']  . "</td>";
               echo "<td>" . $subscription['status'] . "</td>";
               echo "<td>" . $subscription['cancelledDate'] . "</td>";
               echo "</tr>";
-            }
+
+              ++$renterNameIndex;
+            } //foreach loop end
           }
           ?>
         </tbody>

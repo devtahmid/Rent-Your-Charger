@@ -50,4 +50,21 @@ class SubscriptionsDataset
       echo $e->getMessage();
     }
   }
+
+  //function tto read number of subscriptions for an owner's charge point
+  public function readNumberOfSubscriptions($userId)
+  {
+    try {
+      $sql = "SELECT COUNT(*) FROM subscriptions WHERE ownerId=?";
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $userId);
+      $stmt->execute();
+      return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+      echo "couldnt read number of subscriptions for owner";
+      echo $e->getMessage();
+    }
+  }
+
+
 }
