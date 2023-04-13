@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Dashboard</title>
+  <link href="views/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <br /><br /><br /><br />
+
+  <main class="container-xl">
+
+    <div class="row">
+
+      <div class="row text-center">
+        <div class="col-xs-12 mb-3">
+          <h3> Subscriptions</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                  Name</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $OwnerUserRow['name']; ?> </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                  Charge point Address</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800 "><?php echo $addressRow['streetAddress']; ?>
+                  <br>
+                  <?php echo $addressRow['latitude'] . " , " . $addressRow['longitude']; ?>
+                </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                  Total Revenue</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $totalRevenue; ?> </div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-calendar fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                  Active Renters</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo count($subscriptions); ?></div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-comments fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="row text-center">
+        <div class="col-xs-12 mb-3">
+          <h3> Your Renters</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="table-dark">
+          <tr>
+            <th scope="col">Renter Name</th>
+            <th scope="col">Start Date</th>
+            <th scope="col">Start Time</th>
+            <th scope="col">End Time</th>
+            <th scope="col">Status</th>
+            <th scope="col">Cancelled Date</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <?php
+          if (count($subscriptions) != 0) {
+
+            $renterNameIndex = 0;
+            foreach ($subscriptions as $subscription) {
+
+              echo "<tr>";
+              echo "<th scope='row'>" . $allRenterNames[$renterNameIndex]['name'] . "</th>";
+              echo "<td>" . $subscription['startDate'] . "</td>";
+              echo "<td>" . $subscription['startTime']  . "</td>";
+              echo "<td>" . $subscription['endTime']  . "</td>";
+              echo "<td>" . $subscription['status'] . "</td>";
+              echo "<td>" . $subscription['cancelledDate'] . "</td>";
+              echo "</tr>";
+            }
+          }
+          ?>
+        </tbody>
+      </table>
+    </div>

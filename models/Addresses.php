@@ -1,16 +1,16 @@
 <?php
-//address table has id, street, latitude, longitude, price
+//address table has id, street, latitude, longitude, rate
 require_once('models/Database.php');
 class Addresses
 {
-    protected $_id, $_streetAddress, $_latitude, $_longitude, $_price;
+    protected $_id, $_streetAddress, $_latitude, $_longitude, $_rate;
     public function __construct($dbRow)
     {
         $this->_id = $dbRow['id'];
         $this->_streetAddress = $dbRow['streetAddress'];
         $this->_latitude = $dbRow['latitude'];
         $this->_longitude = $dbRow['longitude'];
-        $this->_price = $dbRow['price'];
+        $this->_rate = $dbRow['rate'];
     }
 
     public function getID()
@@ -31,6 +31,6 @@ class Addresses
     }
     public function getPrice()
     {
-        return $this->_price;
+        return $this->_rate;
     }
 }

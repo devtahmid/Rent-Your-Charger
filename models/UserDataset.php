@@ -53,5 +53,34 @@ class UserDataset
     }
   }
 
+  //function to retreive all user details
+  public function readUser($userId)
+  {
+    try {
+      $sql = "SELECT * FROM users WHERE id=?";
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $userId);
+      $stmt->execute();
+      return $stmt->fetch();
+    } catch (PDOException $e) {
+      echo "we rolled back user fetching";
+      echo $e->getMessage();
+    }
+  }
+
+//function to retreive all renter's name for a given chargepoint's ownerId
+public function readRenterNames($userId)
+{
+  try {
+    $sql = "SELECT name FROM users WHERE id IN (SELECT renterId FROM subscriptions WHERE ownerId=?)";
+    $stmt = $this->_dbHandle->prepare($sql);
+    $stmt->bindParam(1, $userId);
+    $stmt->execute();
+    return $stmt->fetchAll();
+  } catch (PDOException $e) {
+    echo "we rolled back user name fetching";
+    echo $e->getMessage();
+  }
+}
 
 }

@@ -1,6 +1,6 @@
 <?php
 require_once('models/UserDataset.php');
-require_once('models/AddressDataset.php');
+require_once('models/AddressesDataset.php');
 
 $emailRegex = '/^[a-zA-Z0-9._-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z.]{2,5}$/';
 $passwordRegex = '/^[0-9A-Za-z]{6,16}$/';
@@ -20,11 +20,19 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
     $userModel = new UserDataset();
     $queriedResult = $userModel->checkUserLogin($_POST['email'], $_POST['password']);
     $userRow = $queriedResult->fetch();
-    if (isset($userRow)) {
+    if (!isset($userRow)) {
       $error = "wrong email or password";
       require("views/login.phtml");
-    } else //email and password found in db
-      require_once('browseController.php');
+    } else { //email and password found in db
+      session_start();
+      $_SESSION['userId'] = $userRow['id'];
+      $_SESSION['userType'] = $userRow['isOwner'] ? 'owner' : 'renter';
+
+      if ($_SESSION['userType'] == 'owner')
+        require_once('dashboardController.php');
+      elseif ($_SESSION['userType'] == 'renter')
+        require_once('browseController.php');
+    }
   }
 } elseif ($_POST['submit'] == 'Signup') {   //if sign up clicked
 
@@ -51,29 +59,25 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
     //all inputs are valid. now insert into db
     if (isset($_POST['isOwner'])) {
       //insert address into db
-      $addressModel = new AddressDataset();
-      $insertedAddress = $addressModel->insertAddress($_POST['street_address'], $_POST['longitude'], $_POST['latitude'], $_POST['rate']);
-      $userId = $insertedAddress['id'];
+      $addressModel = new AddressesDataset();
+      $insertedAddress = $addressModel->insertAddress($_POST['street_address'], $_POST['latitude'], $_POST['longitude'],  $_POST['rate']);
+      $userId = $insertedAddress->getID();
       // insert user into db
       $userModel = new UserDataset();
-      $insertedUser = $userModel->insertUser($_POST['name'], $_POST['email'], $_POST['password'], $_POST['isOwner'], $userId);
-      /* var_dump($insertedAddress);
-      echo "<br>";
-      var_dump($insertedUser);
-      die(); */
+      $insertedUser = $userModel->insertUser($_POST['name'], $_POST['email'], $_POST['password'], "true", $userId);
     } else {
       // register user as a renter
       $userModel = new UserDataset();
       $insertedUser = $userModel->insertUser($_POST['name'], $_POST['email'], $_POST['password'], 'false', 0);
-      $userId = $insertedUser['id'];
-      /* echo "<br>";
-      var_dump($insertedUser);
-      die(); */
+      $userId = $insertedUser->getID();
     }
     session_start();
     $_SESSION['userId'] = $userId;
-    $_SESSION['userType'] = $isOwner ? 'leasee' : 'renter';
+    $_SESSION['userType'] = $insertedUser->getIsOwner() ? 'owner' : 'renter';
 
-    require_once('browseController.php');
+    if ($_SESSION['userType'] == 'owner')
+      require_once('dashboardController.php');
+    elseif ($_SESSION['userType'] == 'renter')
+      require_once('browseController.php');
   }
 }
