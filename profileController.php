@@ -32,10 +32,10 @@ if (isset($_POST['edit_user']) && isset($_FILES["picfile"]["name"]) && $_FILES["
         //Storage: views/assets/image/$fileName;
         //pic moved, now enter image details into db
         $fileUploaded = $userModel->updateProfilePicture($sid, $fileName);
-        if ($fileUploaded != 1) {
+        if ($fileUploaded != 1)
           $error = "DB returned: " . $fileUploaded;
-          echo $error;
-        }
+
+        $userProfile = $userModel->readUser($sid);
       } else
         $error = "File upload failed";
     }
@@ -44,12 +44,12 @@ if (isset($_POST['edit_user']) && isset($_FILES["picfile"]["name"]) && $_FILES["
 } //end of file-upload if statement
 
 
-/* if ($_SESSION['userType'] == 'renter')
+if ($_SESSION['userType'] == 'renter')
   require_once("views/renternavbar.phtml");
 else
-  require_once("views/ownernavbar.phtml"); */
+  require_once("views/ownernavbar.phtml");
 
-echo $error;
+
 
 $addressModel = new AddressesDataset();
 $userAddress = $addressModel->readAddress($userProfile['ownerAddressFK']);

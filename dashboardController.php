@@ -4,7 +4,7 @@ require_once('models/UserDataset.php');
 require_once('models/AddressesDataset.php');
 require_once('models/SubscriptionsDataset.php');
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 if (!isset($_SESSION['userId'])) {
   require_once('credentialController.php');
   exit();
@@ -23,7 +23,7 @@ else
   $page = $_GET['page'];
 
 $results_per_page = 2;
-$page_first_result = ($page-1) * $results_per_page;
+$page_first_result = ($page - 1) * $results_per_page;
 
 $subscriptionModel = new SubscriptionsDataset();
 $numberOfSubscriptions = $subscriptionModel->readNumberOfSubscriptions($OwnerUserId); //total number of subscriptions
