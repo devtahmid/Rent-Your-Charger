@@ -68,19 +68,36 @@ class UserDataset
     }
   }
 
-//function to retreive all renter's name for a given chargepoint's ownerId
-public function readRenterNames($userId)
-{
-  try {
-    $sql = "SELECT name FROM users WHERE id IN (SELECT renterId FROM subscriptions WHERE ownerId=?)";
-    $stmt = $this->_dbHandle->prepare($sql);
-    $stmt->bindParam(1, $userId);
-    $stmt->execute();
-    return $stmt->fetchAll();
-  } catch (PDOException $e) {
-    echo "we rolled back user name fetching";
-    echo $e->getMessage();
+  //function to retreive all renter's name for a given chargepoint's ownerId
+  public function readRenterNames($userId)
+  {
+    try {
+      $sql = "SELECT name FROM users WHERE id IN (SELECT renterId FROM subscriptions WHERE ownerId=?)";
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $userId);
+      $stmt->execute();
+      return $stmt->fetchAll();
+    } catch (PDOException $e) {
+      echo "we rolled back user name fetching";
+      echo $e->getMessage();
+    }
   }
-}
 
+  //function to change profile picture
+  public function updateProfilePicture($userId, $profilePicture)
+  {
+    try {
+      $this->_dbHandle->beginTransaction();
+      $sql = "UPDATE users SET profile_pic=? WHERE id=?";
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $profilePicture);
+      $stmt->bindParam(2, $userId);
+      $stmt->execute();
+      $this->_dbHandle->commit();
+      return 1;
+    } catch (PDOException $e) {
+      $this->_dbHandle->rollBack();
+      return $e->getMessage();
+    }
+  }
 }

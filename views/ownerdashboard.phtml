@@ -90,7 +90,7 @@
               <div class="col mr-2">
                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                   Active Renters</div>
-                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo count($subscriptions); ?></div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo count($allSubscriptions); ?></div>
               </div>
               <div class="col-auto">
                 <i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -144,4 +144,22 @@
           ?>
         </tbody>
       </table>
+
+    </div>
+
+    <div class="row">
+
+      <div class="row align-items-center">
+        <div class="col-xs-12 mb-3">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <?php
+              for ($page = 1; $page <= $numberOfPages; $page++)
+                echo "<li class='page-item'><a class='page-link' href = 'dashboardController.php?page=" . $page . "'>" . $page . "</a></li>";
+              ?>
+            </ul>
+          </nav>
+
+        </div>
+      </div>
     </div>

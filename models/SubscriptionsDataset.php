@@ -51,7 +51,7 @@ class SubscriptionsDataset
     }
   }
 
-  //function tto read number of subscriptions for an owner's charge point
+  //function to read number of subscriptions for an owner's charge point
   public function readNumberOfSubscriptions($userId)
   {
     try {
@@ -62,6 +62,21 @@ class SubscriptionsDataset
       return $stmt->fetchColumn();
     } catch (PDOException $e) {
       echo "couldnt read number of subscriptions for owner";
+      echo $e->getMessage();
+    }
+  }
+
+  //function to return subscriptions for owner according to pagination
+  public function readChargepointRentersPagination($userId, $page_first_result, $results_per_page)
+  {
+    try {
+      $sql = "SELECT * FROM subscriptions WHERE ownerId=? LIMIT " . $page_first_result . "," . $results_per_page;
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $userId);
+      $stmt->execute();
+      return $stmt->fetchAll();
+    } catch (PDOException $e) {
+      echo "couldnt read subscriptions for owner";
       echo $e->getMessage();
     }
   }

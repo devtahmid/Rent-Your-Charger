@@ -29,7 +29,7 @@ $subscriptionModel = new SubscriptionsDataset();
 $numberOfSubscriptions = $subscriptionModel->readNumberOfSubscriptions($OwnerUserId); //total number of subscriptions
 $numberOfPages = ceil($numberOfSubscriptions / $results_per_page); //total number of pages
 
-
+$subscriptions = $subscriptionModel->readChargepointRentersPagination($OwnerUserId, $page_first_result, $results_per_page);
 
 
 
@@ -37,10 +37,10 @@ $addressModel = new AddressesDataset();
 $addressRow = $addressModel->readAddress($OwnerUserRow['ownerAddressFK']);
 
 
-$subscriptions = $subscriptionModel->readChargepointRenters($OwnerUserId);
+$allSubscriptions = $subscriptionModel->readChargepointRenters($OwnerUserId);
 $totalRevenue = 0;
 
-foreach ($subscriptions as $subscription) {
+foreach ($allSubscriptions as $subscription) {
   if ($subscription['status'] == 'cancelled') {
     $numberOfDays = (strtotime($subscription['cancelledDate']) - strtotime($subscription['startDate'])) / (60 * 60 * 24);
     //difference in starttime and endtime
