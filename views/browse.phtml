@@ -1,3 +1,154 @@
-<?php
+<!DOCTYPE html>
+<html lang="en">
 
-echo " browse page";
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse</title>
+
+</head>
+
+<body>
+
+
+
+  <div class="container-lg" style="margin-top: 70px;">
+    <h2 class="my-2 text-center">Search Chargepoints</h2>
+    <form class="row g-3 mb-4">
+
+
+      <div class="input-group-md  col-md-6  d-flex align-items-end">
+        <div class="input-group-text">
+          <input class="form-check-input mt-0" type="radio" id='address' name='searchType' value="address" aria-label="Radio for address" checked>
+          <label for="address">
+            <span>&emsp; Address</span></label>
+        </div>
+        <input type="text" class="form-control" name='streetAddress'>
+      </div>
+
+      <div class="input-group-md  col-md-6  d-flex align-items-end">
+        <div class="input-group-text">
+          <input class="form-check-input mt-0" type="radio" id='coordinates' name='searchType' value="coordinates" aria-label="Radio for address">
+          <label for="coordinates">
+            <span>&emsp; Coordinates</span></label>
+        </div>
+        <input type="text" aria-label="latitude" class="form-control" name='latitude' placeholder='latitude'>
+        <input type="text" aria-label="longitude" class="form-control" name='longitude' placeholder='longitude'>
+      </div>
+
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="input-group-md col-md-5 d-flex mx-auto">
+          <div class="input-group-text">
+            <input class="form-check-input mt-0" type="checkbox" name='priceCheckbox' aria-label="Checkbox for following text input">
+            <span>&emsp; Price less than (gbp)</span>
+          </div>
+          <input type="text" class="form-control" name='price' aria-label="Text input with checkbox">
+        </div>
+
+        <div class="input-group-md  col-md-5  d-flex mx-auto">
+          <div class="input-group-text">
+            <input class="form-check-input mt-0" type="checkbox" name='distanceCheckbox' value="">
+            <span>&emsp; Distance less than (km)</span>
+          </div>
+          <input type="text" class="form-control" name='distance' aria-label="Text input with checkbox">
+        </div>
+
+        <div class="col-md-auto">
+          <button type="submit" class="btn btn-primary" name='search'>Search</button>
+        </div>
+      </div>
+    </form>
+    <hr>
+
+    <!-- ---------form end ---------------- -->
+
+
+    <?php
+
+    if (isset($_GET['searchType']) && $_GET['searchType'] == 'address') {
+      foreach ($matchedAddresses as $address) {
+
+        if ($address['id'] == 0)
+          continue; //harcode it to not show address named "none"
+
+    ?>
+
+        <!-- One Address -->
+        <div class="row">
+          <div class="col-md-12">
+            <h3><?php echo $address['streetAddress']; ?></h3>
+            <p>Coordinates: <?php echo $address['latitude'] . ", " . $address['longitude']; ?></p>
+            <p> Rate (per hour): <?php echo $address['rate']; ?> GBP</p>
+            <?php
+            $flag = 0;
+            foreach ($renterSubscriptions as $renterSubscription)
+              if ($address['id'] == $renterSubscription['addressId']) {
+                echo "<a class='btn btn-primary disabled' >Subscribed</a>";
+                $flag = 1;
+              }
+            if ($flag == 0)
+              echo "<a class='btn btn-primary' href='newSubscriptionController.php?address=" . $address['id'] . "'>Subscribe</a>";
+
+            ?>
+
+          </div>
+        </div>
+        <!-- /.row -->
+        <hr>
+
+      <?php
+      }
+    } elseif (isset($_GET['searchType']) && $_GET['searchType'] == 'coordinates') {
+
+      foreach ($matchedAddresses as $address) {
+
+        if ($address['id'] == 0)
+          continue; //harcode it to not show address named "none"
+
+      ?>
+
+        <!-- One Address -->
+        <div class="row">
+          <div class="col-md-12">
+            <h3><?php echo round($address['distance'], 2); ?> km away</h3>
+            <p>Street Address: <?php echo $address['streetAddress']; ?></p>
+            <p>Coordinates: <?php echo $address['latitude'] . ", " . $address['longitude']; ?></p>
+
+            <?php
+            if ($price != 0)
+              echo "<p> Rate (per hour): <b>" . $address['rate'] . " GBP</b></p>";
+            else
+              echo "<p> Rate (per hour): " . $address['rate'] . " GBP</p>";
+
+            $flag = 0;
+            foreach ($renterSubscriptions as $renterSubscription)
+              if ($address['id'] == $renterSubscription['addressId']) {
+                echo "<a class='btn btn-primary disabled' >Subscribed</a>";
+                $flag = 1;
+              }
+            if ($flag == 0)
+              echo "<a class='btn btn-primary' href='newSubscriptionController.php?address=" . $address['id'] . "'>Subscribe</a>";
+
+            ?>
+
+          </div>
+        </div>
+        <!-- /.row -->
+        <hr>
+
+
+
+    <?php
+      }
+    }
+    ?>
+
+
+
+
+  </div>
+
+</body>
+
+</html>

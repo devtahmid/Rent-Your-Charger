@@ -50,4 +50,56 @@ class AddressesDataset
       echo $e->getMessage();
     }
   }
+
+  //function to find matches for the street address renter gives as search input
+  public function matchAddressByRenterInputStreetAddress($searchTerm, $rate = 0)
+  {
+    try {
+      $searchTerm = '%' . $searchTerm . '%';
+      if ($rate == 0) {
+        $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? ";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(1, $searchTerm);
+      } else { // rate!=0 so we need to filter by rate
+        $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? AND rate <= ? ORDER BY rate ASC";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(1, $searchTerm);
+        $stmt->bindParam(2, $rate);
+      }
+      $stmt->execute();
+      return $stmt->fetchAll();
+    } catch (PDOException $e) {
+      echo "couldnt read addresses";
+      echo $e->getMessage();
+    }
+  }
+
+  //function to find chargepoints nearby for the coordinates input by renter
+  public function matchAddressByRenterInputCoordinates($latitude, $longitude, $distance, $rate)
+  {
+    try {
+
+      if ($rate == 0) {
+        $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance ORDER BY distance";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':lat', $latitude);
+        $stmt->bindParam(':lng', $longitude);
+        $stmt->bindParam(':distance', $distance);
+      } elseif ($rate != 0) { // need to filter by rate as well
+        $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance ORDER BY :rate";
+        $stmt = $this->_dbHandle->prepare($sql);
+        $stmt->bindParam(':lat', $latitude);
+        $stmt->bindParam(':lng', $longitude);
+        $stmt->bindParam(':distance', $distance);
+        $stmt->bindParam(':rate', $rate);
+      }
+
+
+      $stmt->execute(); 
+      return $stmt->fetchAll();
+    } catch (PDOException $e) {
+      echo "couldnt read addresses";
+      echo $e->getMessage();
+    }
+  }
 }

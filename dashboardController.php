@@ -1,11 +1,10 @@
 <?php
-//handles how users browse the app after login
 require_once('models/UserDataset.php');
 require_once('models/AddressesDataset.php');
 require_once('models/SubscriptionsDataset.php');
 
 if (session_status() !== PHP_SESSION_ACTIVE) session_start();
-if (!isset($_SESSION['userId'])) {
+if (!isset($_SESSION['userId']) || $_SESSION['userType'] != 'owner') {
   require_once('credentialController.php');
   exit();
 }

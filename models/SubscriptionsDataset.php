@@ -81,5 +81,20 @@ class SubscriptionsDataset
     }
   }
 
+  //function to read all subscriptions for a renter - will return subscription primary key and the chargepoint's address primary key
+  public function readRenterSubscriptions($userId)
+  {
+    try {
+      $sql = "SELECT subscriptions.sid, users.ownerAddressFK AS addressId FROM subscriptions INNER JOIN users ON subscriptions.ownerId = users.id WHERE renterId=?";
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $userId);
+      $stmt->execute();
+      return $stmt->fetchAll();
+    } catch (PDOException $e) {
+      echo "couldnt read subscriptions for renter";
+      echo $e->getMessage();
+    }
+  }
+
 
 }

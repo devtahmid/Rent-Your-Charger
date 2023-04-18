@@ -7,6 +7,17 @@ $passwordRegex = '/^[0-9A-Za-z]{6,16}$/';
 $rateRegex = '/^\d+(\.\d{1,3})?$/';
 $latitudeRegex = '/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/';
 $longitudeRegex = '/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/';
+
+session_start();
+if (isset($_SESSION['userId'])) {
+  if ($_SESSION['userType'] == "owner")
+    require_once('dashboardController.php');
+  elseif ($_SESSION['userType'] == "renter")
+    require_once('browseController.php');
+
+  exit();
+}
+
 if (!isset($_POST['submit']))
   require("views/login.phtml");
 elseif ($_POST['submit'] == 'Login') {  // if login clicked
@@ -24,14 +35,17 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
       $error = "wrong email or password";
       require("views/login.phtml");
     } else { //email and password found in db
-      session_start();
-      $_SESSION['userId'] = $userRow['id'];
-      $_SESSION['userType'] = $userRow['isOwner'] ? 'owner' : 'renter';
+      if (session_status() !== PHP_SESSION_ACTIVE)
+        session_start();
 
-      if ($_SESSION['userType'] == 'owner')
+      $_SESSION['userId'] = $userRow['id'];
+      if ($userRow['isOwner'] == "true") {
+        $_SESSION['userType'] = "owner";
         require_once('dashboardController.php');
-      elseif ($_SESSION['userType'] == 'renter')
+      } else {
+        $_SESSION['userType'] = "renter";
         require_once('browseController.php');
+      }
     }
   }
 } elseif ($_POST['submit'] == 'Signup') {   //if sign up clicked
@@ -71,7 +85,9 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
       $insertedUser = $userModel->insertUser($_POST['name'], $_POST['email'], $_POST['password'], 'false', 0);
       $userId = $insertedUser->getID();
     }
-    session_start();
+    if (session_status() !== PHP_SESSION_ACTIVE)
+      session_start();
+
     $_SESSION['userId'] = $userId;
     $_SESSION['userType'] = $insertedUser->getIsOwner() ? 'owner' : 'renter';
 
