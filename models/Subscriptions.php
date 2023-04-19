@@ -14,7 +14,6 @@ class Subscriptions
         $this->_endTime = $dbRow['endTime'];
         $this->_status = $dbRow['status'];
         $this->_cancelledDate = $dbRow['cancelledDate'];
-
     }
 
     public function getID()

@@ -4,3 +4,18 @@ error on owner dashboard ^
 if street address selected, distance shold be disabled
 
 if coordinates selected, distance is required
+
+swap ownerId with addressId in subscriptions table
+
+pagination in browse
+
+
+2 radi buttons for signup cargepoinowner and renter
+
+
+enxrypt pasword
+
+format search
+
+
+price for coordinates

@@ -16,14 +16,16 @@ class UserDataset
   //function to register new user
   public function insertUser($name, $email, $password, $isOwner, $ownerAddressFK)
   {
+    $profile_pic = "default.jpg";
     try {
       $this->_dbHandle->beginTransaction();
-      $sql = "INSERT INTO `users`(`name`, `email`, `password`, `isOwner`, `ownerAddressFK`) VALUES (:name,:email,:password,:isOwner,:ownerAddressFK)";
+      $sql = "INSERT INTO `users`(`name`, `email`, `password`, `isOwner`, `profile_pic` , `ownerAddressFK`) VALUES (:name,:email,:password,:isOwner,:profile_pic ,:ownerAddressFK)";
       $insert = $this->_dbHandle->prepare($sql);
       $insert->bindParam(':name', $name);
       $insert->bindParam(':email', $email);
       $insert->bindParam(':password', $password);
       $insert->bindParam(':isOwner', $isOwner);
+      $insert->bindParam(':profile_pic', $profile_pic);
       $insert->bindParam(':ownerAddressFK', $ownerAddressFK);
       $insert->execute();
       $user = new Users($this->_dbHandle->query("SELECT * FROM `users` WHERE `id`=" . $this->_dbHandle->lastInsertId())->fetch());
@@ -98,6 +100,21 @@ class UserDataset
     } catch (PDOException $e) {
       $this->_dbHandle->rollBack();
       return $e->getMessage();
+    }
+  }
+
+  //function to return ownerId for a given ownerAddressFK
+  public function findAddressOwner($addressId)
+  {
+    try {
+      $sql = "SELECT id FROM users WHERE ownerAddressFK=?";
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $addressId);
+      $stmt->execute();
+      return $stmt->fetch();
+    } catch (PDOException $e) {
+      echo "we rolled back user fetching";
+      echo $e->getMessage();
     }
   }
 }

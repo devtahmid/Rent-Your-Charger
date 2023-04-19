@@ -20,7 +20,7 @@
 
       <div class="input-group-md  col-md-6  d-flex align-items-end">
         <div class="input-group-text">
-          <input class="form-check-input mt-0" type="radio" id='address' name='searchType' value="address" aria-label="Radio for address" checked>
+          <input class="form-check-input mt-0" type="radio" id='address' name='searchType' value="address" aria-label="Radio for address" checked onchange="changeForm()">
           <label for="address">
             <span>&emsp; Address</span></label>
         </div>
@@ -29,7 +29,7 @@
 
       <div class="input-group-md  col-md-6  d-flex align-items-end">
         <div class="input-group-text">
-          <input class="form-check-input mt-0" type="radio" id='coordinates' name='searchType' value="coordinates" aria-label="Radio for address">
+          <input class="form-check-input mt-0" type="radio" id='coordinates' name='searchType' value="coordinates" aria-label="Radio for address" onchange="changeForm()">
           <label for="coordinates">
             <span>&emsp; Coordinates</span></label>
         </div>
@@ -51,7 +51,7 @@
             <input class="form-check-input mt-0" type="checkbox" name='distanceCheckbox' value="">
             <span>&emsp; Distance less than (km)</span>
           </div>
-          <input type="text" class="form-control" name='distance' aria-label="Text input with checkbox">
+          <input type="text" class="form-control" name='distance' aria-label="Text input with checkbox" disabled>
         </div>
 
         <div class="col-md-auto">
@@ -106,6 +106,7 @@
         if ($address['id'] == 0)
           continue; //harcode it to not show address named "none"
 
+          //var_dump($address);
       ?>
 
         <!-- One Address -->
@@ -148,7 +149,43 @@
 
 
   </div>
+  <div class="row">
 
+    <div class="row align-items-center">
+      <div class="col-xs-12 mb-3">
+        <nav>
+          <ul class="pagination">
+            <?php
+            if (isset($numberOfPages))
+              for ($page = 1; $page <= $numberOfPages; $page++)
+                echo "<li class='page-item'><a class='page-link' href = 'browseController.php?page=" . $page . "'>" . $page . "</a></li>";
+
+
+            ?>
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    function changeForm() {
+      if (document.getElementById('address').checked) {
+        document.getElementsByName('distanceCheckbox')[0].disabled = true;
+        document.getElementsByName('distance')[0].value = "";
+        document.getElementsByName('distance')[0].disabled = true;
+        document.getElementsByName('distance')[0].required = false;
+      } else if (document.getElementById('coordinates').checked) {
+        document.getElementsByName('distanceCheckbox')[0].disabled = false;
+        document.getElementsByName('distance')[0].disabled = false;
+        document.getElementsByName('distance')[0].required = true;
+
+      }
+    }
+  </script>
 </body>
+
 
 </html>

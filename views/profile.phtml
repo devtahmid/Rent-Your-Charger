@@ -73,7 +73,7 @@
               <div class="mb-2">
                 <label for="status" class="form-label">User Type</label>
                 <input class="form-control" id='status' type="text" name='status' size='50' value='<?php
-                                                                                                    if ($userProfile['isOwner'])
+                                                                                                    if ($userProfile['isOwner'] == "true")
                                                                                                       echo "Owner";
                                                                                                     else
                                                                                                       echo "Renter";

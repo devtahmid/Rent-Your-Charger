@@ -52,21 +52,39 @@ class AddressesDataset
   }
 
   //function to find matches for the street address renter gives as search input
-  public function matchAddressByRenterInputStreetAddress($searchTerm, $rate = 0)
+  public function matchAddressByRenterInputStreetAddress($searchTerm, $rate, $page_first_result, $results_per_page)
   {
     try {
       $searchTerm = '%' . $searchTerm . '%';
-      if ($rate == 0) {
-        $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? ";
-        $stmt = $this->_dbHandle->prepare($sql);
-        $stmt->bindParam(1, $searchTerm);
-      } else { // rate!=0 so we need to filter by rate
-        $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? AND rate <= ? ORDER BY rate ASC";
-        $stmt = $this->_dbHandle->prepare($sql);
-        $stmt->bindParam(1, $searchTerm);
-        $stmt->bindParam(2, $rate);
+      if ($results_per_page == 0) { //means i just need the count of the number of matches
+        if ($rate == 0) { //not filtering by rate
+          $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? ";
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(1, $searchTerm);
+        } else { // rate!=0 so we need to filter by rate
+          $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? AND rate <= ? ORDER BY rate ASC";
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(1, $searchTerm);
+          $stmt->bindParam(2, $rate);
+        }
+      } else { //means i need the aactual mathces divided for pagination
+        if ($rate == 0) {
+          $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ?  LIMIT " . $page_first_result . "," . $results_per_page;
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(1, $searchTerm);
+        } else { // rate!=0 so we need to filter by rate
+          $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? AND rate <= ? ORDER BY rate ASC LIMIT " . $page_first_result . "," . $results_per_page;
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(1, $searchTerm);
+          $stmt->bindParam(2, $rate);
+        }
       }
+
       $stmt->execute();
+
+      if ($results_per_page == 0)
+        return $stmt->rowCount();
+
       return $stmt->fetchAll();
     } catch (PDOException $e) {
       echo "couldnt read addresses";
@@ -95,7 +113,7 @@ class AddressesDataset
       }
 
 
-      $stmt->execute(); 
+      $stmt->execute();
       return $stmt->fetchAll();
     } catch (PDOException $e) {
       echo "couldnt read addresses";

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Subscription</title>
+</head>
+
+<body>
+
+  <div class="container-lg" style="margin-top: 70px;">
+    <h2 class="my-3 text-center">Subscribe to a Chargepoint</h2>
+
+    <form class="row g-3" id="myForm" action="newSubscriptionController.php">
+      <div class="col-md-4">
+        <label for="date" class="form-label">Start Date</label>
+        <input type="date" name='date' class="form-control" id="date" min="<?php echo date('Y-m-d'); ?>" onchange="setMinTime()" required>
+      </div>
+      <div class="col-md-4 col-6">
+        <label for="startTime" class="form-label">Start Time</label>
+        <input type="time" name='startTime' class="form-control" id="startTime" required onchange="verifyTime()">
+      </div>
+      <div class="col-md-4 col-6">
+        <label for="endTime" class="form-label">End Time</label>
+        <input type="time" name='endTime' class="form-control" id="endTime" required>
+      </div>
+      <span class="col-md-4"></span>
+      <span class="col-md-8 help-block text-light-emphasis">End time must be less than 3 hours after start time</span>
+
+      <hr>
+
+      <h5 class="my-2 text-center">Booked Timings</h5>
+      <div class="row d-flex">
+        <?php
+        foreach ($occupiedSlots as $slot) {
+        ?>
+
+          <div class="col-md-3 col-6">
+            <p><?php echo $slot['startDate'] . "  " . $slot['startTime'] . "-" . $slot['endTime']; ?></p>
+          </div>
+
+
+        <?php
+        }
+        ?>
+
+
+      </div>
+      <hr>
+
+      <div class="col-12">
+        <label for="staticStreet" class="form-label">Address</label>
+        <div class="col-sm-10">
+          <input class="form-control" type="text" id="staticStreet" aria-label="Disabled input example" value="<?php echo $addressRow['streetAddress']; ?>" disabled readonly>
+        </div>
+      </div>
+
+
+      <div class="col-12">
+        <label for="staticCoordinate" class="form-label">Coordinates</label>
+        <div class="col-sm-10">
+          <input class="form-control" type="text" id="staticCoordinate" aria-label="Disabled input example" value='<?php echo $addressRow['latitude'] . ", " . $addressRow['longitude']; ?>' disabled readonly>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label for="staticPrice" class="form-label">Charge Per Hour</label>
+        <div class="col-sm-10">
+          <input class="form-control" type="text" id="staticPrice"  value="<?php echo $addressRow['rate']; ?> GBP" disabled readonly>
+        </div>
+      </div>
+
+      <input type='hidden' name='addressIdHidden' value='<?php echo $_GET['address']; ?>'>
+
+      <div class="col-12">
+        <button type="submit" name='submitForm' class="btn btn-primary">Subscribe</button>
+      </div>
+    </form>
+
+  </div>
+  <?php
+
+  if (isset($error)) {
+    echo "<script>alert('$error');</script>";
+  }
+
+
+  ?>
+</body>
+<script>
+  function verifyTime() {
+
+    //Get the start time and parse it as a Date object
+    var startTimeString = document.getElementById("startTime").value;
+    var [hours, minutes] = startTimeString.split(":");
+    var startTimeObj = new Date();
+    startTimeObj.setHours(hours);
+    startTimeObj.setMinutes(minutes);
+    startTimeObj.setSeconds(0);
+
+    var endTimeObj = new Date(startTimeObj.getTime() + (3 * 60 * 60 * 1000));
+    var endTimeString = endTimeObj.toTimeString().slice(0, 5);
+
+    document.getElementById("endTime").setAttribute("max", endTimeString);
+    console.log(endTimeString);
+  }
+
+  // prevent the form from submitting if conditons are not met
+
+  document.getElementById("myForm").addEventListener("submit", function(event) {
+    //get end time max value and parse it as a date object
+    var endTimeMaxString = document.getElementById("endTime").getAttribute("max");
+    var [hours, minutes] = endTimeMaxString.split(":");
+    var endTimeMaxObj = new Date();
+    endTimeMaxObj.setHours(hours);
+    endTimeMaxObj.setMinutes(minutes);
+    endTimeMaxObj.setSeconds(0);
+
+    //get the end time and parse it as  adate object
+    var endTimeString = document.getElementById("endTime").value;
+    var [hours, minutes] = endTimeString.split(":");
+    var endTimeObj = new Date();
+    endTimeObj.setHours(hours);
+    endTimeObj.setMinutes(minutes);
+    endTimeObj.setSeconds(0);
+
+
+    // check if end time is less than the max
+    if (endTimeObj > endTimeMaxObj) {
+      alert("End Time must be less than 3 hours from start time.");
+      event.preventDefault();
+      return;
+    }
+
+  })
+
+  function setMinTime() {
+    // Get the value of the date picker
+    const datePickerValue = document.getElementById("date").value;
+
+    // Get the current date
+    const today = new Date().toISOString().slice(0, 10);
+
+    // If the date picker's value is today, set the min time to the current time
+    if (datePickerValue === today) {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() + 5);
+      const minTime = now.toTimeString().slice(0, 5);
+      document.getElementById("startTime").setAttribute("min", minTime);
+    }
+    // Otherwise, allow any time to be selected
+    else
+      document.getElementById("startTime").removeAttribute("min");
+
+  }
+</script>
+
+</html>

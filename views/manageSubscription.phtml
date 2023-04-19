@@ -1,0 +1,139 @@
+  <!DOCTYPE html>
+  <html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Subscriptions</title>
+    <link href="views/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- add styles in head -->
+    <style>
+      .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .rating>input {
+        display: none;
+      }
+
+      .rating>label {
+        position: relative;
+        width: 1.1em;
+        font-size: 2em;
+        color: #ffcc00;
+        cursor: pointer;
+      }
+
+      .rating>label::before {
+        content: "\2605";
+        position: absolute;
+        opacity: 0;
+      }
+
+      .rating>label:hover:before,
+      .rating>label:hover~label:before {
+        opacity: 1 !important;
+      }
+
+      .rating>input:checked~label:before {
+        opacity: 1;
+      }
+
+      .rating:hover>input:checked~label:before {
+        opacity: 0.4;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+    <br><br><br>
+    <div class='container-lg'>
+      <h4 class="mt-3 mb-2 mx-auto"> Your Subscriptions</h4>
+
+      <div class="row">
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                    Number of Subscriptions</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo count($renterSubscriptions); ?> </div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+          <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+              <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                    Total Charges Incurred</div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $totalCharges; ?></div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-comments fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="table-responsive text-center">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Start Date</th>
+            <th scope="col">Start Time</th>
+            <th scope="col">End Time</th>
+            <th scope="col">Cancel</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider">
+          <tr>
+            <?php
+
+            foreach ($renterSubscriptions as $subscription) {
+
+            ?>
+          <tr>
+            <td><?php echo $subscription['startDate'];
+                ?></td>
+            <td><?php echo $subscription['startTime']; ?></td>
+            <td><?php echo $subscription['endTime']; ?></td>
+            <td>
+              <form action='manageSubscriptionController.php'>
+                <input type='hidden' name='subscriptionId' value='<?php echo $subscription['sId'];  echo $_SESSION['userId']; ?>'>
+                <input class="btn btn-outline-danger btn-sm" type="submit" name="submitCancellation" value="Cancel" />
+              </form>
+            </td>
+          </tr>
+
+        <?php
+            }
+        ?>
+        </tbody>
+      </table>
+    </div>
+
+    </div>
+  </body>
+
+  </html>
