@@ -1,10 +1,6 @@
 error on signup page should use modal
 error on owner dashboard ^
 
-if street address selected, distance shold be disabled
-
-if coordinates selected, distance is required
-
 swap ownerId with addressId in subscriptions table
 
 pagination in browse
@@ -15,7 +11,4 @@ pagination in browse
 
 enxrypt pasword
 
-format search
 
-
-price for coordinates

@@ -88,7 +88,8 @@ class SubscriptionsDataset
   public function readRenterSubscriptions($userId)
   {
     try {
-      $sql = "SELECT * FROM subscriptions WHERE renterId=? and status='renting'";
+      $sql = "SELECT * FROM subscriptions WHERE renterId=? ORDER BY (status = 'renting') DESC, sId ASC; ";
+
       $stmt = $this->_dbHandle->prepare($sql);
       $stmt->bindParam(1, $userId);
       $stmt->execute();
@@ -103,7 +104,7 @@ class SubscriptionsDataset
   public function readRenterSubscriptionsWithAddressId($userId)
   {
     try {
-      $sql = "SELECT subscriptions.sid, users.ownerAddressFK AS addressId FROM subscriptions INNER JOIN users ON subscriptions.ownerId = users.id WHERE renterId=?";
+      $sql = "SELECT subscriptions.sid, subscriptions.status ,users.ownerAddressFK AS addressId FROM subscriptions INNER JOIN users ON subscriptions.ownerId = users.id WHERE renterId=?";
       $stmt = $this->_dbHandle->prepare($sql);
       $stmt->bindParam(1, $userId);
       $stmt->execute();
@@ -133,7 +134,7 @@ class SubscriptionsDataset
   public function cancelSubscription($sid)
   {
     try {
-      $sql = "UPDATE subscriptions SET status='cancelled' WHERE sid=?";
+      $sql = "UPDATE subscriptions SET status='cancelled',  cancelledDate=CURDATE() WHERE sId=?";
       $stmt = $this->_dbHandle->prepare($sql);
       $stmt->bindParam(1, $sid);
       $stmt->execute();

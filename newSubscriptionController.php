@@ -15,7 +15,7 @@ if (!isset($_SESSION['userId'])) {
 require_once("views/renternavbar.phtml");
 date_default_timezone_set('Asia/Riyadh');
 $renterId = $_SESSION['userId'];
-
+echo $renterId;
 if (!isset($_GET['address']) && !isset($_GET['submitForm'])) {
   require_once("views/browse.phtml");
   exit();
@@ -37,11 +37,11 @@ if (!isset($_GET['address']) && !isset($_GET['submitForm'])) {
 } elseif (isset($_GET['submitForm'])) { //submitted new subscrition
   $addressId = $_GET['addressIdHidden'];
   $userModel = new UserDataset();
-  $userRow = $userModel->findAddressOwner($_GET['addressIdHidden']);
+  $userRow = $userModel->findAddressOwner($_GET['addressIdHidden']); //need to know ownerId while inserting new subscription
   $ownerId = $userRow['id'];
 
-  $addressModel = new AddressesDataset();
-  $addressRow = $addressModel->readAddress($addressId);
+  /*   $addressModel = new AddressesDataset();
+  $addressRow = $addressModel->readAddress($addressId); */
 
   $subscriptionModel = new SubscriptionsDataset();
   $occupiedSlots = $subscriptionModel->readOccupiedSlots($ownerId);
@@ -51,10 +51,10 @@ if (!isset($_GET['address']) && !isset($_GET['submitForm'])) {
 
   if ($clashingSlots > 0) {
     $error = "Time period clashes with already booked slots";
-    require_once("views/newSubscription.phtml");
+    header("location :browseController.php");
     exit();
   } else { // subscription can be done
-    $insertedSubscription = $subscriptionModel->insertSubscription($ownerId, $renterId, $_GET['date'], $_GET['startTime'], $_GET['endTime']);
+    $insertedSubscription = $subscriptionModel->insertSubscription($renterId, $ownerId,  $_GET['date'], $_GET['startTime'], $_GET['endTime']);
 
     if (!isset($insertedSubscription)) {
       $error = "Subscription failed";

@@ -6,7 +6,7 @@ class Subscriptions
     public function __construct($dbRow)
     {
 
-        $this->_id = $dbRow['id'];
+        $this->_id = $dbRow['sId'];
         $this->_renterId = $dbRow['renterId'];
         $this->_ownerId = $dbRow['ownerId'];
         $this->_startDate = $dbRow['startDate'];

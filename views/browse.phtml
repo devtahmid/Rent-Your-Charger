@@ -15,7 +15,7 @@
 
   <div class="container-lg" style="margin-top: 70px;">
     <h2 class="my-2 text-center">Search Chargepoints</h2>
-    <form class="row g-3 mb-4">
+    <form class="row g-3 mb-4" action='browseController.php'>
 
 
       <div class="input-group-md  col-md-6  d-flex align-items-end">
@@ -33,28 +33,30 @@
           <label for="coordinates">
             <span>&emsp; Coordinates</span></label>
         </div>
-        <input type="text" aria-label="latitude" class="form-control" name='latitude' placeholder='latitude'>
-        <input type="text" aria-label="longitude" class="form-control" name='longitude' placeholder='longitude'>
+        <input type="text" aria-label="latitude" class="form-control" name='latitude' placeholder='latitude' disabled>
+        <input type="text" aria-label="longitude" class="form-control" name='longitude' placeholder='longitude' disabled>
       </div>
 
-      <div class="row d-flex justify-content-center align-items-center">
-        <div class="input-group-md col-md-5 d-flex mx-auto">
+      <div class="row my-2 d-flex justify-content-center align-items-center">
+        <div class="input-group-md col-md-6 d-flex me-auto">
           <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" name='priceCheckbox' aria-label="Checkbox for following text input">
-            <span>&emsp; Price less than (gbp)</span>
+            <input class="form-check-input mt-0" type="checkbox" name='priceCheckbox' id='priceCheckbox' aria-label="Checkbox for following text input">
+            <label for='priceCheckbox'>
+              <span>&emsp; Price less than (gbp)</span> </label>
           </div>
           <input type="text" class="form-control" name='price' aria-label="Text input with checkbox">
         </div>
 
-        <div class="input-group-md  col-md-5  d-flex mx-auto">
+        <div class="input-group-md  col-md-6  d-flex mx-auto">
           <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" name='distanceCheckbox' value="">
-            <span>&emsp; Distance less than (km)</span>
+            <input class="form-check-input mt-0" type="checkbox" name='distanceCheckbox' value="" id='distanceCheckbox'>
+            <label for="distanceCheckbox">
+              <span>&emsp; Distance less than (km)</span></label>
           </div>
           <input type="text" class="form-control" name='distance' aria-label="Text input with checkbox" disabled>
         </div>
 
-        <div class="col-md-auto">
+        <div class="col-md-auto my-2">
           <button type="submit" class="btn btn-primary" name='search'>Search</button>
         </div>
       </div>
@@ -83,7 +85,7 @@
             <?php
             $flag = 0;
             foreach ($renterSubscriptions as $renterSubscription)
-              if ($address['id'] == $renterSubscription['addressId']) {
+              if ($address['id'] == $renterSubscription['addressId'] && $renterSubscription['status'] == 'active') {
                 echo "<a class='btn btn-primary disabled' >Subscribed</a>";
                 $flag = 1;
               }
@@ -106,7 +108,7 @@
         if ($address['id'] == 0)
           continue; //harcode it to not show address named "none"
 
-          //var_dump($address);
+        //var_dump($address);
       ?>
 
         <!-- One Address -->
@@ -118,7 +120,7 @@
 
             <?php
             if ($price != 0)
-              echo "<p> Rate (per hour): <b>" . $address['rate'] . " GBP</b></p>";
+              echo "<p> Rate (per hour): <b>" . $address['rate'] . $price . " GBP</b></p>";
             else
               echo "<p> Rate (per hour): " . $address['rate'] . " GBP</p>";
 
@@ -157,10 +159,16 @@
           <ul class="pagination">
             <?php
             if (isset($numberOfPages))
-              for ($page = 1; $page <= $numberOfPages; $page++)
-                echo "<li class='page-item'><a class='page-link' href = 'browseController.php?page=" . $page . "'>" . $page . "</a></li>";
+              for ($page = 1; $page <= $numberOfPages; $page++) {
+                //Get the current URL parameters
+                $params = $_GET;
+                //modify the 'page' parameter
+                $params['page'] = $page;
+                //build the new URL with modifies parameters
+                $newUrl = strtok($_SERVER["REQUEST_URI"], '?') . '?' . http_build_query($params);
 
-
+                echo "<li class='page-item'><a class='page-link' href = '" . $newUrl . "'>" . $page . "</a></li>";
+              }
             ?>
           </ul>
         </nav>
@@ -177,11 +185,17 @@
         document.getElementsByName('distance')[0].value = "";
         document.getElementsByName('distance')[0].disabled = true;
         document.getElementsByName('distance')[0].required = false;
+        document.getElementsByName('latitude')[0].disabled = true;
+        document.getElementsByName('longitude')[0].disabled = true;
+        document.getElementsByName('streetAddress')[0].disabled = false;
       } else if (document.getElementById('coordinates').checked) {
         document.getElementsByName('distanceCheckbox')[0].disabled = false;
         document.getElementsByName('distance')[0].disabled = false;
         document.getElementsByName('distance')[0].required = true;
-
+        document.getElementsByName('latitude')[0].disabled = false;
+        document.getElementsByName('longitude')[0].disabled = false;
+        document.getElementsByName('latitude')[0].disabled = false;
+        document.getElementsByName('streetAddress')[0].disabled = true;
       }
     }
   </script>

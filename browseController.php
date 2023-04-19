@@ -50,8 +50,13 @@ if ($_GET['searchType'] == 'address') {
   $numberOfPages = ceil($numberOfMatches / $results_per_page);
 
   $matchedAddresses = $addressModel->matchAddressByRenterInputStreetAddress($_GET['streetAddress'], $price, $page_first_result, $results_per_page);
-} elseif ($_GET['searchType'] == 'coordinates')
-  $matchedAddresses = $addressModel->matchAddressByRenterInputCoordinates($_GET['latitude'], $_GET['longitude'], $distance, $price);
+} elseif ($_GET['searchType'] == 'coordinates'){
 
+  $numberOfMatches = $addressModel->matchAddressByRenterInputCoordinates($_GET['latitude'], $_GET['longitude'], $distance, $price, $page_first_result, 0);
+
+  $numberOfPages = ceil($numberOfMatches / $results_per_page);
+
+  $matchedAddresses = $addressModel->matchAddressByRenterInputCoordinates($_GET['latitude'], $_GET['longitude'], $distance, $price, $page_first_result, $results_per_page);
+}
 
 require_once("views/browse.phtml");

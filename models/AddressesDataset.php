@@ -51,11 +51,28 @@ class AddressesDataset
     }
   }
 
+  /*   //function to read address row for a given ownerAddressFK (foreign key in users table)
+  public function readAddressByOwnerAddressFK($ownerAddressFK)
+  {
+    try {
+      $sql = "SELECT addresses.streetAddress FROM addresses INNER JOIN users ON addresses.id=users.ownerAddressFK WHERE users.ownerAddressFK=? ";
+      $stmt = $this->_dbHandle->prepare($sql);
+      $stmt->bindParam(1, $ownerAddressFK);
+      $stmt->execute();
+      return $stmt->fetch();
+    } catch (PDOException $e) {
+      echo "couldnt read address row";
+      echo $e->getMessage();
+    }
+  }
+ */
   //function to find matches for the street address renter gives as search input
   public function matchAddressByRenterInputStreetAddress($searchTerm, $rate, $page_first_result, $results_per_page)
   {
     try {
       $searchTerm = '%' . $searchTerm . '%';
+      //NOTE: even if the sql query looks similar, they return different results. if $results_per_page==0, it will return all the matches from the DB, otherwise it will return according to the pagination, i.e. limit per page
+
       if ($results_per_page == 0) { //means i just need the count of the number of matches
         if ($rate == 0) { //not filtering by rate
           $sql = "SELECT * FROM addresses WHERE streetAddress LIKE ? ";
@@ -93,28 +110,51 @@ class AddressesDataset
   }
 
   //function to find chargepoints nearby for the coordinates input by renter
-  public function matchAddressByRenterInputCoordinates($latitude, $longitude, $distance, $rate)
+  public function matchAddressByRenterInputCoordinates($latitude, $longitude, $distance, $rate, $page_first_result, $results_per_page)
   {
     try {
+      //refer NOTE in matchAddressByRenterInputStreetAddress
 
-      if ($rate == 0) {
-        $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance ORDER BY distance";
-        $stmt = $this->_dbHandle->prepare($sql);
-        $stmt->bindParam(':lat', $latitude);
-        $stmt->bindParam(':lng', $longitude);
-        $stmt->bindParam(':distance', $distance);
-      } elseif ($rate != 0) { // need to filter by rate as well
-        $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance ORDER BY :rate";
-        $stmt = $this->_dbHandle->prepare($sql);
-        $stmt->bindParam(':lat', $latitude);
-        $stmt->bindParam(':lng', $longitude);
-        $stmt->bindParam(':distance', $distance);
-        $stmt->bindParam(':rate', $rate);
+
+      if ($results_per_page == 0) { //means i just need the count of the number of matches
+        if ($rate == 0) {
+          $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance ORDER BY distance";
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(':lat', $latitude);
+          $stmt->bindParam(':lng', $longitude);
+          $stmt->bindParam(':distance', $distance);
+        } elseif ($rate != 0) { // need to filter by rate as well
+          $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance AND rate<= :rate ORDER BY :rate";
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(':lat', $latitude);
+          $stmt->bindParam(':lng', $longitude);
+          $stmt->bindParam(':distance', $distance);
+          $stmt->bindParam(':rate', $rate);
+        }
+      } else { //means i need the aactual mathces divided for pagination
+
+        if ($rate == 0) {
+          $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance ORDER BY distance LIMIT " . $page_first_result . "," . $results_per_page;
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(':lat', $latitude);
+          $stmt->bindParam(':lng', $longitude);
+          $stmt->bindParam(':distance', $distance);
+        } elseif ($rate != 0) { // need to filter by rate as well
+          $sql = "SELECT *, ( 6371 * acos( cos( radians(:lat) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(:lng) ) + sin( radians(:lat) ) * sin( radians( latitude ) ) ) ) AS distance FROM addresses HAVING distance <= :distance AND rate<= :rate ORDER BY :rate LIMIT " . $page_first_result . "," . $results_per_page;
+          $stmt = $this->_dbHandle->prepare($sql);
+          $stmt->bindParam(':lat', $latitude);
+          $stmt->bindParam(':lng', $longitude);
+          $stmt->bindParam(':distance', $distance);
+          $stmt->bindParam(':rate', $rate);
+        }
       }
 
-
       $stmt->execute();
-      return $stmt->fetchAll();
+
+      if ($results_per_page == 0)
+        return $stmt->rowCount();
+      else
+        return $stmt->fetchAll();
     } catch (PDOException $e) {
       echo "couldnt read addresses";
       echo $e->getMessage();
