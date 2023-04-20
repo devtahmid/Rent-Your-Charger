@@ -63,19 +63,19 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
   } elseif (!preg_match($passwordRegex, $_POST['password']) || !preg_match($passwordRegex, $_POST['confirm_password'])) {
     $error2 = "invalid password format";
     require("views/login.phtml");
-  } elseif (isset($_POST['isOwner']) && (!isset($_POST['street_address']) || !isset($_POST['longitude']) || !isset($_POST['latitude']))) {
+  } elseif ($_POST['userType']== 'owner' && (!isset($_POST['street_address']) || !isset($_POST['longitude']) || !isset($_POST['latitude']))) {
     $error2 = "please fill in all address fields";
     require("views/login.phtml");
-  } elseif (isset($_POST['isOwner']) && (!preg_match($latitudeRegex, $_POST['latitude']) || !preg_match($longitudeRegex, $_POST['longitude']))) {
+  } elseif ($_POST['userType']== 'owner' && (!preg_match($latitudeRegex, $_POST['latitude']) || !preg_match($longitudeRegex, $_POST['longitude']))) {
     $error2 = "Invalid latitude/longitude format";
     require("views/login.phtml");
-  } elseif (isset($_POST['isOwner']) && !preg_match($rateRegex, $_POST['rate'])) {
+  } elseif ($_POST['userType']== 'owner' && !preg_match($rateRegex, $_POST['rate'])) {
     $error2 = "Invalid rate format";
     require("views/login.phtml");
   } else {
     $userId;
     //all inputs are valid. now insert into db
-    if (isset($_POST['isOwner'])) {
+    if ($_POST['userType']== 'owner') {
       //insert address into db
       $addressModel = new AddressesDataset();
       $insertedAddress = $addressModel->insertAddress($_POST['street_address'], $_POST['latitude'], $_POST['longitude'],  $_POST['rate']);
