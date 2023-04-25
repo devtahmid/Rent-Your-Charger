@@ -34,6 +34,7 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
     $userModel = new UserDataset();
     $queriedResult = $userModel->checkUserLogin($_POST['email'], $_POST['password']);
     $userRow = $queriedResult->fetch();
+    var_dump($userRow);
     if ($queriedResult->rowCount() == 0) {
       $error = "wrong email or password";
       require("views/login.phtml");
