@@ -74,7 +74,8 @@ class UserDataset
   public function readRenterNames($userId)
   {
     try {
-      $sql = "SELECT name FROM users WHERE id IN (SELECT renterId FROM subscriptions WHERE ownerId=?)";
+      //$sql = "SELECT name FROM users WHERE id IN (SELECT renterId FROM subscriptions WHERE ownerId=?)";
+      $sql = "SELECT users.name FROM users JOIN subscriptions ON users.id = subscriptions.renterId WHERE subscriptions.ownerId = ?";
       $stmt = $this->_dbHandle->prepare($sql);
       $stmt->bindParam(1, $userId);
       $stmt->execute();
@@ -117,7 +118,4 @@ class UserDataset
       echo $e->getMessage();
     }
   }
-
-
-
 }

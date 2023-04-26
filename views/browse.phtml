@@ -15,7 +15,7 @@
 
   <div class="container-lg" style="margin-top: 70px;">
     <h2 class="my-2 text-center">Search Chargepoints</h2>
-    
+
     <form class="row g-3 mb-4" action='browseController.php'>
 
 
@@ -25,7 +25,12 @@
           <label for="address">
             <span>&emsp; Address</span></label>
         </div>
-        <input type="text" class="form-control" name='streetAddress'>
+
+
+        <input type="text" list="addressesList" class="form-control" onkeyup="requestAjax(this.value)" name='streetAddress'>
+        <datalist id="addressesList">
+        </datalist>
+
       </div>
 
       <div class="input-group-md  col-md-6  d-flex align-items-end">
@@ -41,7 +46,7 @@
       <div class="row my-2 d-flex justify-content-center align-items-center">
         <div class="input-group-md col-md-6 d-flex me-auto">
           <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" name='priceCheckbox' id='priceCheckbox' aria-label="Checkbox for following text input">
+            <input class="form-check-input mt-0" type="checkbox" name='pckboriceChex' id='priceCheckbox' aria-label="Checkbox for following text input">
             <label for='priceCheckbox'>
               <span>&emsp; Price less than (gbp)</span> </label>
           </div>
@@ -84,6 +89,8 @@
             <p>Coordinates: <?php echo $address['latitude'] . ", " . $address['longitude']; ?></p>
             <p> Rate (per hour): <?php echo $address['rate']; ?> GBP</p>
             <?php
+
+            //checking to see if the displayed address exists within the renter's subscriptions. If it exists, the button displayed will be disabled with the bootstrap disabled class
             $flag = 0;
             foreach ($renterSubscriptions as $renterSubscription)
               if ($address['id'] == $renterSubscription['addressId'] && $renterSubscription['status'] == 'active') {
@@ -150,32 +157,35 @@
 
 
 
+    <div class="row">
 
-  </div>
-  <div class="row">
+      <div class="row align-items-center">
+        <div class="col-xs-12 mb-3">
+          <nav>
+            <ul class="pagination">
+              <?php
+              if (isset($numberOfPages))
+                for ($page = 1; $page <= $numberOfPages; $page++) {
+                  //Get the current URL parameters
+                  $params = $_GET;
+                  //modify the 'page' parameter
+                  $params['page'] = $page;
+                  //build the new URL with modifies parameters
+                  $newUrl = strtok($_SERVER["REQUEST_URI"], '?') . '?' . http_build_query($params);
 
-    <div class="row align-items-center">
-      <div class="col-xs-12 mb-3">
-        <nav>
-          <ul class="pagination">
-            <?php
-            if (isset($numberOfPages))
-              for ($page = 1; $page <= $numberOfPages; $page++) {
-                //Get the current URL parameters
-                $params = $_GET;
-                //modify the 'page' parameter
-                $params['page'] = $page;
-                //build the new URL with modifies parameters
-                $newUrl = strtok($_SERVER["REQUEST_URI"], '?') . '?' . http_build_query($params);
+                  echo "<li class='page-item'><a class='page-link' href = '" . $newUrl . "'>" . $page . "</a></li>";
+                }
+              ?>
+            </ul>
+          </nav>
 
-                echo "<li class='page-item'><a class='page-link' href = '" . $newUrl . "'>" . $page . "</a></li>";
-              }
-            ?>
-          </ul>
-        </nav>
-
+        </div>
       </div>
+
+
     </div>
+
+
   </div>
 
 
@@ -187,7 +197,9 @@
         document.getElementsByName('distance')[0].disabled = true;
         document.getElementsByName('distance')[0].required = false;
         document.getElementsByName('latitude')[0].disabled = true;
+        document.getElementsByName('latitude')[0].value = "";
         document.getElementsByName('longitude')[0].disabled = true;
+        document.getElementsByName('longitude')[0].value = "";
         document.getElementsByName('streetAddress')[0].disabled = false;
       } else if (document.getElementById('coordinates').checked) {
         document.getElementsByName('distanceCheckbox')[0].disabled = false;
@@ -197,7 +209,59 @@
         document.getElementsByName('longitude')[0].disabled = false;
         document.getElementsByName('latitude')[0].disabled = false;
         document.getElementsByName('streetAddress')[0].disabled = true;
+        document.getElementsByName('streetAddress')[0].value = "";
       }
+    }
+
+    //this function will take the user's query and send it to the server, and capture the response and call displayAjaxOutput()
+    function requestAjax(query) {
+
+      if (query.length <= 2)
+        return 0;
+
+
+      var xhttp = new XMLHttpRequest();
+
+      xhttp.open("GET", "browseController.php?searchType=address&streetAddress=" + query, true);
+      xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+      xhttp.send();
+
+      xhttp.onreadystatechange = function() {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+
+          //capture ajax response which is json
+          var response = xhttp.responseText;
+          //send the response to the function that will display the suggestions
+          displayAjaxOutput(response);
+        }
+      };
+
+
+    }
+
+    function displayAjaxOutput(response) {
+      //convert the string sent by ajax to json format
+      jsonObjResponse = JSON.parse(response);
+      //      console.log(jsonObjResponse)
+
+      //select the datalist element
+      var dataList = document.getElementsByTagName('datalist')[0];
+      //select all the options inside the datalist
+      var dataListOptions = dataList.children;
+      //add the list of street names to the datalist options
+      for (let index = 0; index < jsonObjResponse.length; index++) {
+        flag = 0;
+        //loop through the options to see if the response to be added into the datalist already exists. if exists, change flag to 1
+        for (let i = 0; i < dataListOptions.length; i++)
+          if (dataListOptions[i].value == jsonObjResponse[index])
+            flag = 1;
+
+        //if flag=0, the response does not exist among the options, therefore add it to the datalist
+        if (flag == 0)
+          dataList.innerHTML += "<option value='" + jsonObjResponse[index] + "'>"
+
+      }
+
     }
   </script>
 </body>

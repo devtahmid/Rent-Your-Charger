@@ -128,9 +128,8 @@
 
             $renterNameIndex = 0;
             foreach ($subscriptions as $subscription) {
-
               echo "<tr>";
-              echo "<th scope='row'>" . htmlspecialchars($allRenterNames[$renterNameIndex]['name']) . "</th>";
+              echo "<th scope='row'>" . htmlspecialchars($allRenterNames[$page_first_result + $renterNameIndex]['name']) . "</th>";
               echo "<td>" . $subscription['startDate'] . "</td>";
               echo "<td>" . $subscription['startTime']  . "</td>";
               echo "<td>" . $subscription['endTime']  . "</td>";

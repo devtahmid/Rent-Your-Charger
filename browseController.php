@@ -4,6 +4,37 @@ require_once('models/UserDataset.php');
 require_once('models/AddressesDataset.php');
 require_once('models/SubscriptionsDataset.php');
 
+//this function will check if the request received by browseController.php is an ajax request
+function is_ajax_request()
+{
+  return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+    $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
+}
+
+if (is_ajax_request()) {
+  //if the request is an ajax request, then we will return the json data
+  $price = 0;
+  if ($_GET['searchType'] == 'address') {
+
+    $maxResultsInDropDown = 10;
+    $addressModel = new AddressesDataset();
+    $matchedAddresses = $addressModel->matchAddressByRenterInputStreetAddress($_GET['streetAddress'], $price, 0, $maxResultsInDropDown);
+
+    //convert $matchedAddresses to json and send to client
+
+    $streetNamesArray = [];
+    foreach ($matchedAddresses as $address)
+      array_push($streetNamesArray, $address['streetAddress']);
+
+    echo json_encode($streetNamesArray);
+  }
+
+  exit();
+}
+
+
+
+
 if (session_status() !== PHP_SESSION_ACTIVE)
   session_start();
 
@@ -50,7 +81,7 @@ if ($_GET['searchType'] == 'address') {
   $numberOfPages = ceil($numberOfMatches / $results_per_page);
 
   $matchedAddresses = $addressModel->matchAddressByRenterInputStreetAddress($_GET['streetAddress'], $price, $page_first_result, $results_per_page);
-} elseif ($_GET['searchType'] == 'coordinates'){
+} elseif ($_GET['searchType'] == 'coordinates') {
 
   $numberOfMatches = $addressModel->matchAddressByRenterInputCoordinates($_GET['latitude'], $_GET['longitude'], $distance, $price, $page_first_result, 0);
 

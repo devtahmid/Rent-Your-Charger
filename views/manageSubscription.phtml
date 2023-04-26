@@ -25,7 +25,7 @@
                 <div class="col mr-2">
                   <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                     Number of Subscriptions</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo count($renterSubscriptions); ?> </div>
+                  <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $numberOfOngoingSubscriptions; ?> </div>
                 </div>
                 <div class="col-auto">
                   <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -53,54 +53,55 @@
         </div>
       </div>
 
-    </div>
 
-    <div class="table-responsive text-center">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th scope="col">Street Address</th>
-            <th scope="col">Start Date</th>
-            <th scope="col">Start Time</th>
-            <th scope="col">End Time</th>
-            <th scope="col">Cancel</th>
-          </tr>
-        </thead>
-        <tbody class="table-group-divider">
-          <?php
-          $index = 0;
-          foreach ($renterSubscriptions as $subscription) {
-          ?>
+
+      <div class="table-responsive text-center">
+        <table class="table table-bordered">
+          <thead>
             <tr>
-              <td><?php echo $streetAddressArray[$index]; ?></td>
-              <td><?php echo $subscription['startDate'];
-                  ?></td>
-              <td><?php echo $subscription['startTime']; ?></td>
-              <td><?php echo $subscription['endTime']; ?></td>
-              <td>
-                <form action='manageSubscriptionController.php'>
-                  <input type='hidden' name='subscriptionId' value='<?php echo $subscription['sId']; ?>'>
-
-                  <?php
-                  if ($subscription['status'] == 'renting') {
-                    echo "<input class='btn btn-outline-danger btn-sm' type='submit' name='submitCancellation' value='Cancel' />";
-                  } else
-                    echo "Already Cancelled";
-
-                  ?>
-
-                </form>
-              </td>
+              <th scope="col">Street Address</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">Start Time</th>
+              <th scope="col">End Time</th>
+              <th scope="col">Cancel</th>
             </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <?php
+            $index = 0;
+            foreach ($renterSubscriptions as $subscription) {
+            ?>
+              <tr>
+                <td><?php echo $streetAddressArray[$index]; ?></td>
+                <td><?php echo $subscription['startDate'];
+                    ?></td>
+                <td><?php echo $subscription['startTime']; ?></td>
+                <td><?php echo $subscription['endTime']; ?></td>
+                <td>
+                  <form action='manageSubscriptionController.php'>
+                    <input type='hidden' name='subscriptionId' value='<?php echo $subscription['sId']; ?>'>
 
-          <?php
-            ++$index;
-          }
-          ?>
-        </tbody>
-      </table>
+                    <?php
+                    if ($subscription['status'] == 'renting') {
+                      echo "<input class='btn btn-outline-danger btn-sm' type='submit' name='submitCancellation' value='Cancel' />";
+                    } else
+                      echo "Already Cancelled";
+
+                    ?>
+
+                  </form>
+                </td>
+              </tr>
+
+            <?php
+              ++$index;
+            }
+            ?>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-
     </div>
   </body>
 

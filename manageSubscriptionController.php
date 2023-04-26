@@ -29,11 +29,12 @@ $renterSubscriptions = $subscriptionModel->readRenterSubscriptions($renterId);
 
 $addressModel = new AddressesDataset();
 $userModel = new UserDataset();
-$streetAddressArray =[]; // this array will collect all the street addresses for the ownerIds in the $renterSubscriptions array
+$streetAddressArray = []; // this array will collect all the street addresses for the ownerIds in the $renterSubscriptions array
 
 
 //calculating total charges incurred
 $totalCharges = 0;
+$numberOfOngoingSubscriptions = 0;
 foreach ($renterSubscriptions as $subscription) {
   if ($subscription['status'] == 'cancelled') {
     $numberOfDays = (strtotime($subscription['cancelledDate']) - strtotime($subscription['startDate'])) / (60 * 60 * 24);
@@ -47,6 +48,7 @@ foreach ($renterSubscriptions as $subscription) {
 
     $totalCharges += $numberOfDays * $timePeriodInHours * $addressRow['rate'];
   } elseif ($subscription['status'] == 'renting') {
+    ++$numberOfOngoingSubscriptions;
     $numberOfDays = (strtotime(date("Y-m-d")) - strtotime($subscription['startDate'])) / (60 * 60 * 24);
 
     //difference in starttime and endtime
