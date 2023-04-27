@@ -4,8 +4,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile</title>
-  <link href="views/assets/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="loginForm.css" rel="stylesheet">
+  <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
   <style>
     .form-control {
       font-size: 18px;
@@ -14,6 +13,11 @@
 
     .form-control::placeholder {
       font-weight: 20;
+    }
+
+    .profile-picSizeOverride {
+      max-width: 300px !important;
+      max-height: 300px !important;
     }
   </style>
 </head>
@@ -27,7 +31,7 @@
           <h1 class="h3 mb-3 fw-normal text-center">Profile</h1>
 
           <div class="mx-auto text-center">
-            <img src='views/assets/image/<?php echo $profile_pic; ?>' class='profile-pic img-fluid  border border-secondary border-2 rounded ' alt='profilepic'>
+            <img src='image/<?php echo $profile_pic; ?>' class='profile-pic img-fluid  border border-secondary border-2 rounded profile-picSizeOverride' alt='profilepic'>
           </div>
           <!--           <div class="mx-auto d-block"> -->
           <input type="file" name="picfile" id='fileUpload' /><span> (images<=5MB) </span>

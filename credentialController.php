@@ -4,7 +4,7 @@ require_once('models/AddressesDataset.php');
 
 $emailRegex = '/^[a-zA-Z0-9._-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z.]{2,5}$/';
 $passwordRegex = '/^[0-9A-Za-z]{6,16}$/';
-$rateRegex = '/^\d+(\.\d{1,3})?$/';
+$rateRegex = '/^\d{1,3}(\.\d{1,3})?$/';
 $latitudeRegex = '/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/';
 $longitudeRegex = '/^(\+|-)?(?:180(?:(?:\.0{1,6})?)|(?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,6})?))$/';
 
@@ -81,24 +81,27 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
   } else {
     $userId;
     //all inputs are valid. now insert into db
-    if ($_POST['userType'] == 'owner') {
-      //sanitize user input
-      $postStreetAddress = htmlspecialchars(stripslashes(strip_tags($_POST['street_address'])));
-      $postLatitude = htmlspecialchars(stripslashes(strip_tags($_POST['latitude'])));
-      $postLongitude = htmlspecialchars(stripslashes(strip_tags($_POST['longitude'])));
-      $postRate = htmlspecialchars(stripslashes(strip_tags($_POST['rate'])));
 
-      $postName = htmlspecialchars(stripslashes(strip_tags($_POST['name'])));
-      $postEmail = htmlspecialchars(stripslashes(strip_tags($_POST['email'])));
-      $postPassword = htmlspecialchars(stripslashes(strip_tags($_POST['password'])));
+    //but first sanitize user input
+    $postStreetAddress = htmlspecialchars(stripslashes(strip_tags($_POST['street_address'])));
+    $postLatitude = htmlspecialchars(stripslashes(strip_tags($_POST['latitude'])));
+    $postLongitude = htmlspecialchars(stripslashes(strip_tags($_POST['longitude'])));
+    $postRate = htmlspecialchars(stripslashes(strip_tags($_POST['rate'])));
+
+    $postName = htmlspecialchars(stripslashes(strip_tags($_POST['name'])));
+    $postEmail = htmlspecialchars(stripslashes(strip_tags($_POST['email'])));
+    $postPassword = htmlspecialchars(stripslashes(strip_tags($_POST['password'])));
+    if ($_POST['userType'] == 'owner') {
+
 
       //insert address into db
       $addressModel = new AddressesDataset();
       $insertedAddress = $addressModel->insertAddress($postStreetAddress, $postLatitude, $postLongitude,  $postRate);
-      $userId = $insertedAddress->getID();
+      $addressId = $insertedAddress->getID();
       // insert user into db
       $userModel = new UserDataset();
-      $insertedUser = $userModel->insertUser($postName, $postEmail, $postPassword, "true", $userId);
+      $insertedUser = $userModel->insertUser($postName, $postEmail, $postPassword, "true", $addressId);
+      $userId = $insertedUser->getID();
     } else {
       // register user as a renter
       $userModel = new UserDataset();

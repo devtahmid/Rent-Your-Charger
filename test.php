@@ -6,6 +6,10 @@
    </head>
 
    <body>
+
+   <span name='mail_msg'>ddsdfd</span>
+   <span name='mail_msg'>fdfdfdfd</span>
+
       <div id = "map" style = "width:900px; height:580px"></div>
       <script>
          // Creating map options

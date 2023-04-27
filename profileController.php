@@ -28,8 +28,8 @@ if (isset($_POST['edit_user']) && isset($_FILES["picfile"]["name"]) && $_FILES["
       $fdetails = explode(".", $_FILES["picfile"]["name"]);
       $fext = end($fdetails);
       $fileName = "pic" . $fdetails[0] . time() . uniqid(rand()) . ".$fext";  //file name
-      if (move_uploaded_file($_FILES["picfile"]["tmp_name"], "views/assets/image/$fileName")) {
-        //Storage: views/assets/image/$fileName;
+      if (move_uploaded_file($_FILES["picfile"]["tmp_name"], "image/$fileName")) {
+        //Storage: image/$fileName;
         //pic moved, now enter image details into db
         $fileUploaded = $userModel->updateProfilePicture($sid, $fileName);
         if ($fileUploaded != 1)

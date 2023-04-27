@@ -34,26 +34,31 @@ if (!isset($_GET['address']) && !isset($_GET['submitForm'])) {
 
   require_once("views/newSubscription.phtml");
 } elseif (isset($_GET['submitForm'])) { //submitted new subscrition
-  $addressId = $_GET['addressIdHidden'];
+
+  //sanitizing inputs
+  $getAddressIdHidden =  htmlspecialchars(stripslashes(strip_tags($_GET['addressIdHidden'])));
+  $getStartTime =  htmlspecialchars(stripslashes(strip_tags($_GET['startTime'])));
+  $getEndTime =  htmlspecialchars(stripslashes(strip_tags($_GET['endTime'])));
+  $getDate =  htmlspecialchars(stripslashes(strip_tags($_GET['date'])));
+
+  $addressId = $getAddressIdHidden;
   $userModel = new UserDataset();
-  $userRow = $userModel->findAddressOwner($_GET['addressIdHidden']); //need to know ownerId while inserting new subscription
+  $userRow = $userModel->findAddressOwner($getAddressIdHidden); //need to know ownerId while inserting new subscription
   $ownerId = $userRow['id'];
 
-  /*   $addressModel = new AddressesDataset();
-  $addressRow = $addressModel->readAddress($addressId); */
 
   $subscriptionModel = new SubscriptionsDataset();
   $occupiedSlots = $subscriptionModel->readOccupiedSlots($ownerId);
 
   // check if clashing with already booked slots
-  $clashingSlots = $subscriptionModel->checkIfTimeClashes($ownerId, $_GET['startTime'], $_GET['endTime'], $_GET['date']);
+  $clashingSlots = $subscriptionModel->checkIfTimeClashes($ownerId, $getStartTime, $getEndTime, $getDate);
 
   if ($clashingSlots > 0) {
     $error = "Time period clashes with already booked slots";
     header("location :browseController.php");
     exit();
   } else { // subscription can be done
-    $insertedSubscription = $subscriptionModel->insertSubscription($renterId, $ownerId,  $_GET['date'], $_GET['startTime'], $_GET['endTime']);
+    $insertedSubscription = $subscriptionModel->insertSubscription($renterId, $ownerId,  $getDate, $getStartTime, $getEndTime);
 
     if (!isset($insertedSubscription)) {
       $error = "Subscription failed";

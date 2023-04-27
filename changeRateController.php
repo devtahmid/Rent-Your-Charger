@@ -21,7 +21,8 @@ $addressModel = new AddressesDataset();
 
 //if form is submitted for changing rate
 if (isset($_GET['submitForm'])) {
-  $updatedRate =  $addressModel->updateRate($ownerRow['ownerAddressFK'], $_GET['rate']);
+  $getRate =  htmlspecialchars(stripslashes(strip_tags($_GET['rate']))); // sanitizing inputs 
+  $updatedRate =  $addressModel->updateRate($ownerRow['ownerAddressFK'], $getRate);
   if ($updatedRate == 1) {
     echo "<script>alert('updated Successfully');</script>";
     require_once("dashboardController.php");
