@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Change Rate</title>
+</head>
+
+<body>
+
+  <div class="container-md" style="margin-top: 70px;">
+    <h2 class="my-3 mx-auto text-center">Change Rate of Chargepoint</h2>
+
+    <form class="row g-3 mx-auto" id="myForm" action="changeRateController.php">
+      <div class="col-md-4 mx-auto">
+        <label for="rate" class="form-label">New Rate</label>
+        <input type="number" name='rate' class="form-control" id="rate" value="<?php echo $addressRow['rate']; ?>" min='0.1' step='0.01' required>
+        <button type="submit" name='submitForm' class="btn btn-primary mt-3">Update Rate</button>
+      </div>
+    </form>
+
+    <hr>
+
+    <div class="col-12">
+      <label for="staticStreet" class="form-label">Address</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" id="staticStreet" aria-label="Disabled input example" value="<?php echo $addressRow['streetAddress']; ?>" disabled readonly>
+      </div>
+    </div>
+
+
+    <div class="col-12">
+      <label for="staticCoordinate" class="form-label">Coordinates</label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" id="staticCoordinate" aria-label="Disabled input example" value='<?php echo $addressRow['latitude'] . ", " . $addressRow['longitude']; ?>' disabled readonly>
+      </div>
+    </div>
+
+  </div>
+  <?php
+  if (isset($error))
+    echo "<script>alert('$error');</script>";
+
+  ?>
+</body>
+
+</html>

@@ -1,19 +1,39 @@
-<?php
-var_dump($_GET);
-?>
-<!-- sample html form with checkboxes -->
- <form action="test.php" method="get">
-  <input type="checkbox" name="vehicle1" value="Bike"> I have a bike<br>
-  <input type="checkbox" name="vehicle2" > I have a car<br>
-  <input type="checkbox" name="vehicle3" > I have a boat<br>
-  <input type="submit">
+<html>
+   <head>
+      <title>Marker Options Example</title>
+      <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
+      <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+   </head>
 
+   <body>
+      <div id = "map" style = "width:900px; height:580px"></div>
+      <script>
+         // Creating map options
+         var mapOptions = {
+            center: [17.385044, 78.486671],
+            zoom: 10
+         }
+         // Creating a map object
+         var map = new L.map('map', mapOptions);
 
+         // Creating a Layer object
+         var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 
-  <ul class="dropdown-menu">
-    <li><span class="dropdown-item-text">Dropdown item text</span></li>
-    <li><a class="dropdown-item" href="#">Action</a></li>
-    <li><a class="dropdown-item" href="#">Another action</a></li>
-    <li><a class="dropdown-item" href="#">Something else here</a></li>
-  </ul>
+         // Adding layer to the map
+         map.addLayer(layer);
 
+         // Creating a Marker
+         var markerOptions = {
+            title: "MyLocation",
+            clickable: true,
+            draggable: true
+         }
+         // Creating a marker
+         var marker = L.marker([17.385044, 78.486671], markerOptions);
+
+         // Adding marker to the map
+         marker.addTo(map);
+      </script>
+   </body>
+
+</html>

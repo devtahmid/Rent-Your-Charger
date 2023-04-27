@@ -15,10 +15,13 @@ if (is_ajax_request()) {
   //if the request is an ajax request, then we will return the json data
   $price = 0;
   if ($_GET['searchType'] == 'address') {
+    //sanitize input
+    $getAddress = htmlspecialchars(stripslashes(strip_tags($_GET['streetAddress'])));
 
-    $maxResultsInDropDown = 10;
+
+    $maxResultsToFetch = 10;
     $addressModel = new AddressesDataset();
-    $matchedAddresses = $addressModel->matchAddressByRenterInputStreetAddress($_GET['streetAddress'], $price, 0, $maxResultsInDropDown);
+    $matchedAddresses = $addressModel->matchAddressByRenterInputStreetAddress($getAddress, $price, 0, $maxResultsToFetch);
 
     //convert $matchedAddresses to json and send to client
 
@@ -27,6 +30,24 @@ if (is_ajax_request()) {
       array_push($streetNamesArray, $address['streetAddress']);
 
     echo json_encode($streetNamesArray);
+  } elseif ($_GET['searchType'] == 'coordinates') {
+    //sanitize inputs
+    $getLatitude = htmlspecialchars(stripslashes(strip_tags($_GET['latitude'])));
+    $getLongitude = htmlspecialchars(stripslashes(strip_tags($_GET['longitude'])));
+    $getDistance = htmlspecialchars(stripslashes(strip_tags($_GET['distance'])));
+    $addressModel = new AddressesDataset();
+
+    $matchedAddresses = $addressModel->matchAddressByRenterInputCoordinates($getLatitude, $getLongitude, $getDistance, $price, 0, 1100);
+    //maximum 1100 markers will be returned. anyway, the map shows error after around 800 markers
+
+    $markersArray = [];
+    foreach ($matchedAddresses as $address) {
+      $marker = [];
+      $marker['latitude'] = $address['latitude'];
+      $marker['longitude'] = $address['longitude'];
+      array_push($markersArray, $marker);
+    }
+    echo json_encode($markersArray);
   }
 
   exit();
@@ -62,7 +83,6 @@ if (isset($_GET['distanceCheckbox']))
   $distance = $_GET['distance'];
 
 
-
 if (!isset($_GET['page']))
   $page = 1;
 else
@@ -76,10 +96,13 @@ $numberOfPages;
 $addressModel = new AddressesDataset();
 if ($_GET['searchType'] == 'address') {
 
+  //total numberr of matches. 0 is passed as the last parameter to indicate that we only want the total number of matches
   $numberOfMatches = $addressModel->matchAddressByRenterInputStreetAddress($_GET['streetAddress'], $price, $page_first_result, 0);
 
-  $numberOfPages = ceil($numberOfMatches / $results_per_page);
 
+  $numberOfPages = ceil($numberOfMatches / $results_per_page);
+  //100/3 = 33.3333
+  //ceil(33.333) = 34
   $matchedAddresses = $addressModel->matchAddressByRenterInputStreetAddress($_GET['streetAddress'], $price, $page_first_result, $results_per_page);
 } elseif ($_GET['searchType'] == 'coordinates') {
 

@@ -51,21 +51,25 @@ class AddressesDataset
     }
   }
 
-  /*   //function to read address row for a given ownerAddressFK (foreign key in users table)
-  public function readAddressByOwnerAddressFK($ownerAddressFK)
+  //function to update rate
+  public function updateRate($addressId, $rate)
   {
     try {
-      $sql = "SELECT addresses.streetAddress FROM addresses INNER JOIN users ON addresses.id=users.ownerAddressFK WHERE users.ownerAddressFK=? ";
+      $this->_dbHandle->beginTransaction();
+      $sql = "UPDATE addresses SET rate=? WHERE id=?";
       $stmt = $this->_dbHandle->prepare($sql);
-      $stmt->bindParam(1, $ownerAddressFK);
+      $stmt->bindParam(1, $rate);
+      $stmt->bindParam(2, $addressId);
       $stmt->execute();
-      return $stmt->fetch();
+      $this->_dbHandle->commit();
+      return 1;
     } catch (PDOException $e) {
-      echo "couldnt read address row";
+      $this->_dbHandle->rollBack();
+      echo "couldnt update rate";
       echo $e->getMessage();
     }
   }
- */
+
   //function to find matches for the street address renter gives as search input
   public function matchAddressByRenterInputStreetAddress($searchTerm, $rate, $page_first_result, $results_per_page)
   {

@@ -22,9 +22,8 @@ if (!isset($_GET['address']) && !isset($_GET['submitForm'])) {
 } elseif (isset($_GET['address'])) { //came to new subscription page from browse page
   $addressId = $_GET['address'];
   $userModel = new UserDataset();
-  $userRow = $userModel->findAddressOwner($_GET['address']);
+  $userRow = $userModel->findAddressOwner($addressId);
   $ownerId = $userRow['id']; //needed for address['ownerId'] field in DB . set as hidden input in newSubscription.phtml
-
   //to display chargepoint details
   $addressModel = new AddressesDataset();
   $addressRow = $addressModel->readAddress($addressId);
