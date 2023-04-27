@@ -77,7 +77,6 @@
     <div id="map" style="height: 500px;"></div>
     <!-- ------------map end----------- -->
     <?php
-
     if (isset($_GET['searchType']) && $_GET['searchType'] == 'address') {
       foreach ($matchedAddresses as $address) {
 
@@ -97,10 +96,11 @@
             //checking to see if the displayed address exists within the renter's subscriptions. If it exists, the button displayed will be disabled with the bootstrap disabled class
             $flag = 0;
             foreach ($renterSubscriptions as $renterSubscription)
-              if ($address['id'] == $renterSubscription['addressId'] && $renterSubscription['status'] == 'active') {
+              if ($address['id'] == $renterSubscription['addressId'] && $renterSubscription['status'] == 'renting') {
                 echo "<a class='btn btn-primary disabled' >Subscribed</a>";
                 $flag = 1;
               }
+
             if ($flag == 0)
               echo "<a class='btn btn-primary' href='newSubscriptionController.php?address=" . $address['id'] . "'>Subscribe</a>";
 
@@ -138,7 +138,7 @@
 
             $flag = 0;
             foreach ($renterSubscriptions as $renterSubscription)
-              if ($address['id'] == $renterSubscription['addressId']) {
+              if ($address['id'] == $renterSubscription['addressId'] && $renterSubscription['status'] == 'renting') {
                 echo "<a class='btn btn-primary disabled' >Subscribed</a>";
                 $flag = 1;
               }

@@ -1,6 +1,6 @@
-var presentLatitude = 26.093364;
-var presentLongitude = 50.539511;
-var radius = 20;
+var presentLatitude = 26.093364; //center of bahrain
+var presentLongitude = 50.539511; //center of bahrain
+var radius = 20; // the distance between center of the map to the corner of the map
 
 
 if (!navigator.geolocation) { //check to see if geolocation suppported
@@ -75,7 +75,7 @@ function toRadians(degrees) {
   return degrees * Math.PI / 180;
 }
 
-
+//to handle toggling of SearchType radio buttons
 function changeForm() {
   if (document.getElementById('address').checked) {
     document.getElementsByName('distanceCheckbox')[0].disabled = true;
@@ -100,7 +100,7 @@ function changeForm() {
   }
 }
 
-
+// used in navigator.geolocation.getCurrentPosition(positionSucess, positionError)  at begining of the file
 function positionSucess(position) {
   //find the coordinates
   presentLatitude = position.coords.latitude;
@@ -112,6 +112,7 @@ function positionSucess(position) {
   mymap.setView([presentLatitude, presentLongitude], 16);
 }
 
+// used in navigator.geolocation.getCurrentPosition(positionSucess, positionError)  at begining of the file
 function positionError() {
   alert('Unable to retrieve your location');
   document.getElementsByName('latitude')[0].value = "";
@@ -140,6 +141,7 @@ function requestStreetAddressAjax(query) {
   };
 }
 
+//display the suggestions in the datalist dropdown under streetAddress
 function displayStreetAjaxOutput(response) {
   //convert the string sent by ajax to json format
   jsonObjResponse = JSON.parse(response);
@@ -163,7 +165,7 @@ function displayStreetAjaxOutput(response) {
   }
 }
 
-
+//request the coordinates for the markers based on the updated radius
 function requestMarkersAjax() {
   var xhttp = new XMLHttpRequest();
 
@@ -182,6 +184,7 @@ function requestMarkersAjax() {
   };
 }
 
+//display the markers received as coordinates from requestMarkersAjax()
 function displayMarkersByAjax(response) {
   jsonObjResponse = JSON.parse(response);
 
