@@ -35,7 +35,7 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
     //sanitize user input
     $postEmail = htmlspecialchars(stripslashes(strip_tags($_POST['email'])));
     $postPassword = htmlspecialchars(stripslashes(strip_tags($_POST['password'])));
-
+    $postPassword = md5($postPassword); //hashed password
     $userModel = new UserDataset();
     $queriedResult = $userModel->checkUserLogin($postEmail, $postPassword);
     $userRow = $queriedResult->fetch();
@@ -91,6 +91,7 @@ elseif ($_POST['submit'] == 'Login') {  // if login clicked
     $postName = htmlspecialchars(stripslashes(strip_tags($_POST['name'])));
     $postEmail = htmlspecialchars(stripslashes(strip_tags($_POST['email'])));
     $postPassword = htmlspecialchars(stripslashes(strip_tags($_POST['password'])));
+    $postPassword = md5($postPassword); //hashed password
     if ($_POST['userType'] == 'owner') {
 
 
