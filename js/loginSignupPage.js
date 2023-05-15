@@ -50,3 +50,14 @@ function toggleAdditionalDetails() {
 
 
 }
+
+document.getElementById('popupClose').addEventListener('click', displaySampleCredentials);
+
+function displaySampleCredentials() {
+  if (document.getElementById('credentialsPopup').style.display == 'none')
+    document.getElementById('credentialsPopup').style.display = 'block';
+  else
+    document.getElementById('credentialsPopup').style.display = 'none'
+
+  return false; //because a submit button calling it
+}

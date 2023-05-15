@@ -5,108 +5,139 @@
 	<meta charset="utf-8">
 	<title>Borrow my Charger</title>
 	<link rel="stylesheet" href="css/loginstylesheet.css">
+
 	<script src="js/reg_loginformvalidation.js"> </script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-	<div class="wrapper">
-		<div class="title-text">
-			<div class="title login">
-				Login Form
+	<div>
+		<div class="wrapper">
+			<div class="title-text">
+				<div class="title login">
+					Login Form
+				</div>
+				<div class="title signup">
+					Signup Form
+				</div>
 			</div>
-			<div class="title signup">
-				Signup Form
+			<div class="form-container">
+				<div class="slide-controls">
+					<input type="radio" name="slide" id="login" checked>
+					<input type="radio" name="slide" id="signup">
+					<label for="login" class="slide login">Login</label>
+					<label for="signup" class="slide signup">Signup</label>
+					<div class="slider-tab"></div>
+				</div>
+				<div class="form-inner">
+					<form method='post' action="credentialController.php" class="login" onSubmit="return checkLoginInputs();">
+						<div class="field">
+							<input type="text" name="email" onkeyup="checkMAIL(this.value, 'loginemail')" placeholder="Email Address" required>
+						</div>
+						<span id='loginemail'></span>
+						<div class="field">
+							<input name="password" onkeyup="checkPWD(this.value,'login_pwd_msg')" type="password" placeholder="Password" required>
+							<div id="login_pwd_msg" class="form-text">6-16 alphanumeric characters</div>
+						</div>
+						<input type='hidden' name='JSEnabled' value='false'>
+						<div class="signup-link" style="color:red;">
+							<?php
+							if (isset($error)) {
+								echo $error;
+							}
+							?>
+						</div>
+						<div class="field btn" style="margin-top:25px;">
+							<div class="btn-layer"></div>
+							<input type="submit" name='submit' value="Login">
+						</div>
+
+						<div class="field btn" style="margin-top:15px;">
+							<div class="btn-layer"></div>
+							<input type="submit" onclick="return displaySampleCredentials()" style="font-weight:bold;" value="Sample Credentials">
+						</div>
+					</form>
+
+					<form method='post' action="credentialController.php" onSubmit="return checkRegistrationInputs();" class="signup">
+						<div>
+							<div class="field">
+								<input type="text" name='name' placeholder="Name" onkeyup="checkFN(this.value)" size='50' required>
+								<span id='name_msg'></span>
+							</div>
+							<div class="field">
+								<input type="text" name='email' placeholder="Email Address" onkeyup="checkMAIL(this.value, 'registrationemail')" size='20' required>
+								<span id='registrationemail'></span>
+							</div>
+							<div class="field">
+								<input type="password" name='password' placeholder="Password" onkeyup="checkPWD(this.value,'reg_pwd_msg')" required>
+								<span id='reg_pwd_msg'></span>
+							</div>
+							<div class="field">
+								<input type="password" name='confirm_password' placeholder="Confirm password" onkeyup="confirmPWD(this.value)" required>
+								<span id='cfmpwd_msg'></span>
+							</div>
+
+							<div class="field">
+
+								<input type="radio" name="userType" id='userTypeOwner' value="owner" class="field height-width-0" style="display:inline;" onclick="toggleAdditionalDetails()" required> <label for='userTypeOwner' style="padding-left:0;">Chargepoint Owner</label> &nbsp &nbsp &nbsp
+								<input type="radio" name="userType" id='userTypeRenter' class="field height-width-0" style="display:inline; " value="renter" onclick="toggleAdditionalDetails()"> <label for='userTypeRenter' style="padding-left:0;">Renter</label>
+
+							</div>
+							<div class="field" name='ownerFields'>
+								<input type="text" name='street_address' onkeyup="checkStreet(this.value)" placeholder="Street Address">
+								<span id='street_msg'></span>
+							</div>
+							<div class="field" name='ownerFields'>
+								<input type="text" name='latitude' onkeyup="checkLatitude(this.value)" placeholder="Latitude">
+								<span id='latitude_msg'></span>
+							</div>
+							<div class="field" name='ownerFields'>
+								<input type="text" name='longitude' onkeyup="checkLongitude(this.value)" placeholder="Longitude">
+								<span id='longitude_msg'></span>
+							</div>
+
+							<div class="field" name='ownerFields'>
+								<input type="number" min='0.1' step='0.01' name='rate' onkeyup="checkRate(this.value)" placeholder="Rate">
+								<span id='rate_msg'></span>
+							</div>
+						</div>
+						<input type='hidden' name='JSEnabled' value='false'>
+						<div class="field btn">
+							<div class="btn-layer"></div>
+							<?php
+							if (isset($error2))
+								echo "<script>alert('" . $error2 . "');</script>";
+							?>
+							<input type="submit" name='submit' value="Signup">
+						</div>
+					</form>
+				</div>
 			</div>
+
 		</div>
-		<div class="form-container">
-			<div class="slide-controls">
-				<input type="radio" name="slide" id="login" checked>
-				<input type="radio" name="slide" id="signup">
-				<label for="login" class="slide login">Login</label>
-				<label for="signup" class="slide signup">Signup</label>
-				<div class="slider-tab"></div>
-			</div>
-			<div class="form-inner">
-				<form method='post' action="credentialController.php" class="login" onSubmit="return checkLoginInputs();">
-					<div class="field">
-						<input type="text" name="email" onkeyup="checkMAIL(this.value, 'loginemail')" placeholder="Email Address" required>
-					</div>
-					<span id='loginemail'></span>
-					<div class="field">
-						<input name="password" onkeyup="checkPWD(this.value,'login_pwd_msg')" type="password" placeholder="Password" required>
-						<div id="login_pwd_msg" class="form-text">6-16 alphanumeric characters</div>
-					</div>
-					<input type='hidden' name='JSEnabled' value='false'>
-					<div class="signup-link" style="color:red;">
-						<?php
-						if (isset($error)) {
-							echo $error;
-						}
-						?>
-					</div>
-					<div class="field btn" style="margin-top:25px;">
-						<div class="btn-layer"></div>
-						<input type="submit" name='submit' value="Login">
-					</div>
 
-				</form>
-				<form method='post' action="credentialController.php" onSubmit="return checkRegistrationInputs();" class="signup">
-					<div>
-						<div class="field">
-							<input type="text" name='name' placeholder="Name" onkeyup="checkFN(this.value)" size='50' required>
-							<span id='name_msg'></span>
-						</div>
-						<div class="field">
-							<input type="text" name='email' placeholder="Email Address" onkeyup="checkMAIL(this.value, 'registrationemail')" size='20' required>
-							<span id='registrationemail'></span>
-						</div>
-						<div class="field">
-							<input type="password" name='password' placeholder="Password" onkeyup="checkPWD(this.value,'reg_pwd_msg')" required>
-							<span id='reg_pwd_msg'></span>
-						</div>
-						<div class="field">
-							<input type="password" name='confirm_password' placeholder="Confirm password" onkeyup="confirmPWD(this.value)" required>
-							<span id='cfmpwd_msg'></span>
-						</div>
 
-						<div class="field">
 
-							<input type="radio" name="userType" id='userTypeOwner' value="owner" class="field height-width-0" style="display:inline;" onclick="toggleAdditionalDetails()" required> <label for='userTypeOwner' style="padding-left:0;">Chargepoint Owner</label> &nbsp &nbsp &nbsp
-							<input type="radio" name="userType" id='userTypeRenter' class="field height-width-0" style="display:inline; " value="renter" onclick="toggleAdditionalDetails()"> <label for='userTypeRenter' style="padding-left:0;">Renter</label>
 
-						</div>
-						<div class="field" name='ownerFields'>
-							<input type="text" name='street_address' onkeyup="checkStreet(this.value)" placeholder="Street Address">
-							<span id='street_msg'></span>
-						</div>
-						<div class="field" name='ownerFields'>
-							<input type="text" name='latitude' onkeyup="checkLatitude(this.value)" placeholder="Latitude">
-							<span id='latitude_msg'></span>
-						</div>
-						<div class="field" name='ownerFields'>
-							<input type="text" name='longitude' onkeyup="checkLongitude(this.value)" placeholder="Longitude">
-							<span id='longitude_msg'></span>
-						</div>
+		<div style="z-index:999; width:320px; height:205px;
+		border:2px solid black; background:white;
+  border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.40) 0px 42px 42px, rgba(0, 0, 0, 0.25) 0px 15px 15px; position:absolute; top:25%; left:50%; right:50%;  transform: translate(-50%, -50%); padding:3px; display:none;" id="credentialsPopup">
 
-						<div class="field" name='ownerFields'>
-							<input type="number" min='0.1' step='0.01' name='rate' onkeyup="checkRate(this.value)" placeholder="Rate">
-							<span id='rate_msg'></span>
-						</div>
-					</div>
-					<input type='hidden' name='JSEnabled' value='false'>
-					<div class="field btn">
-						<div class="btn-layer"></div>
-						<?php
-						if (isset($error2))
-							echo "<script>alert('" . $error2 . "');</script>";
-						?>
-						<input type="submit" name='submit' value="Signup">
-					</div>
-				</form>
+			<span style="font-weight:bolder;">Sample Credentials</span>
+			<span style="font-weight:bolder; color:#c044aa; padding:5px; margin-left:115px; cursor:pointer;" id='popupClose'>X</span>
+			<hr style="background-color:#c044aa; height:2px; border:none;">
+			<u>Renter</u>
+			<p>Email:&emsp;&emsp; &nbsp; sarakashov1@gmail.com <br>
+				Password: &nbsp; sarakashov1</p><br>
+			<u>Owner</u>
+			<p>Email:&emsp;&emsp; &nbsp; georgeorwell@gmail.com <br>
+				Password: &nbsp; georgeorwell</p>
 
-			</div>
 		</div>
+
+
+
+
 	</div>
 	<script src="js/loginSignupPage.js"> </script>
 </body>

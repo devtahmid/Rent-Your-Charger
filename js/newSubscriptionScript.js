@@ -35,7 +35,7 @@ document.getElementById("myForm").addEventListener("submit", function (event) {
   endTimeObj.setSeconds(0);
 
 
-  // check if end time is less than the max
+  // check if end time is more than the max
   if (endTimeObj > endTimeMaxObj) {
     alert("End Time must be less than 3 hours from start time.");
     event.preventDefault();
@@ -50,7 +50,8 @@ function setMinTime() {
 
   // Get the current date
   const today = new Date().toISOString().slice(0, 10);
-
+  console.log(today);
+  console.log("terst");
   // If the date picker's value is today, set the min time to the current time
   if (datePickerValue === today) {
     const now = new Date();

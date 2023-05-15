@@ -1,43 +1,22 @@
 <html>
-   <head>
-      <title>Marker Options Example</title>
-      <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
-      <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-   </head>
 
-   <body>
+<head>
+   <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+</head>
 
-   <span name='mail_msg'>ddsdfd</span>
-   <span name='mail_msg'>fdfdfdfd</span>
+<body>
+   <lord-icon src="https://cdn.lordicon.com/uiaaaqiz.json" trigger="hover" colors="primary:#92140c,secondary:#f9c9c0" style="width:250px;height:250px">
+   </lord-icon>
 
-      <div id = "map" style = "width:900px; height:580px"></div>
-      <script>
-         // Creating map options
-         var mapOptions = {
-            center: [17.385044, 78.486671],
-            zoom: 10
-         }
-         // Creating a map object
-         var map = new L.map('map', mapOptions);
 
-         // Creating a Layer object
-         var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+   <?php
 
-         // Adding layer to the map
-         map.addLayer(layer);
+   var_dump(json_decode('{"1":{"totalSymptoms":6,"percentage":50},"4":{"totalSymptoms":4,"percentage":50},"5":{"totalSymptoms":5,"percentage":40},"6":{"totalSymptoms":6,"percentage":50},"10":{"totalSymptoms":3,"percentage":33.3299999999999982946974341757595539093017578125},"9":{"totalSymptoms":1,"percentage":100}}',true));
 
-         // Creating a Marker
-         var markerOptions = {
-            title: "MyLocation",
-            clickable: true,
-            draggable: true
-         }
-         // Creating a marker
-         var marker = L.marker([17.385044, 78.486671], markerOptions);
 
-         // Adding marker to the map
-         marker.addTo(map);
-      </script>
-   </body>
+   ?>
+
+
+</body>
 
 </html>
