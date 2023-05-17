@@ -1,0 +1,9 @@
+user can click on map to change coordinates in form
+
+error on signup page should use modal
+error on owner dashboard ^
+
+//swap ownerId with addressId in subscriptions table
+
+
+

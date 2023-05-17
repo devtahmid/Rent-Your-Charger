@@ -190,19 +190,7 @@ function checkRegistrationInputs() {
 function checkLoginInputs() {
   document.forms[0].JSEnabled.value = "TRUE";
 
-  if (document.getElementById('loginemail').innerHTML == "" || document.getElementById('login_pwd_msg').innerHTML == "" || document.getElementById('login_pwd_msg')) {
-
-    if (document.getElementById('loginemail').innerHTML == "") {
-      document.getElementById('loginemail').innerHTML = "remove whitepsace and re-enter email"
-      document.getElementById('loginemail').style.color = 'red'
-    }
-    if (document.getElementById('login_pwd_msg').innerHTML == "" || document.getElementById('login_pwd_msg').innerHTML == "6-16 alphanumeric characters") {
-      document.getElementById('login_pwd_msg').innerHTML = "remove whitepsace and re-enter password"
-      document.getElementById('login_pwd_msg').style.color = 'red'
-    }
-
-
-  }
-
+  checkMAIL(document.getElementById('fillemail').value, 'loginemail');
+  checkPWD(document.getElementById('fillpwd').value, 'login_pwd_msg');
   return (emailFlag && passwordFlag);
 }

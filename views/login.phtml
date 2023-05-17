@@ -32,11 +32,11 @@
 				<div class="form-inner">
 					<form method='post' action="credentialController.php" class="login" onSubmit="return checkLoginInputs();">
 						<div class="field">
-							<input type="text" name="email" onkeyup="checkMAIL(this.value, 'loginemail')" placeholder="Email Address" required>
+							<input type="text" name="email" onkeyup="checkMAIL(this.value, 'loginemail')" placeholder="Email Address" id="fillemail" required value="<?php if (isset($_GET['fillemail'])) echo $_GET['fillemail']; ?>">
 						</div>
 						<span id='loginemail'></span>
 						<div class="field">
-							<input name="password" onkeyup="checkPWD(this.value,'login_pwd_msg')" type="password" placeholder="Password" required>
+							<input name="password" onkeyup="checkPWD(this.value,'login_pwd_msg')" type="password" placeholder="Password" id="fillpwd" required value="<?php if (isset($_GET['fillpwd'])) echo $_GET['fillpwd']; ?>">
 							<div id="login_pwd_msg" class="form-text">6-16 alphanumeric characters</div>
 						</div>
 						<input type='hidden' name='JSEnabled' value='false'>
