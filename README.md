@@ -1,10 +1,14 @@
-# rent-your-charger
+Rent-Your-Charger
+
 ![Bootstrap](https://img.shields.io/badge/bootstrap-%23563D7C.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=Leaflet&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 ![PHP](https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white)
 ![MariaDB](https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white)  
- Home owners with car chargers can rent out their chargers to other car owners so it does not remain unused. Renters can use the app to search for and book charge points they want to use. 
-Demo website: [http://chargeit.epizy.com](http://chargeit.epizy.com/index.php?fillemail=sarakashov1@gmail.com&fillpwd=sarakashov1)  
+
+Home owners with car chargers can rent out their chargers to other car owners so it does not remain unused. Renters can use the app to search for and book charge points they want to use.   
+
+**Hosted at**: [http://chargeit.epizy.com](http://chargeit.epizy.com/index.php?fillemail=sarakashov1@gmail.com&fillpwd=sarakashov1)  
 
   
     
