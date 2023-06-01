@@ -1,9 +1,10 @@
+when user enters distance for searching chrgepoints, the map should have the same distance as radius 
 user can click on map to change coordinates in form
 
 error on signup page should use modal
 error on owner dashboard ^
 
-//swap ownerId with addressId in subscriptions table
+swap ownerId with addressId in subscriptions table - DB
 
 
 
